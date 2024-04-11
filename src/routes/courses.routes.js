@@ -1,8 +1,6 @@
-import { Router } from 'express';
-import * as coursesController from '../controllers/courses.controller';
+import { Router } from 'express'
+import * as coursesController from '../controllers/courses.controller'
 const router = Router()
-
-
 
 router.get('/', coursesController.getCourses)
 router.get('/:courseId', coursesController.getCourseById)
