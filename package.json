@@ -6,7 +6,8 @@
   "scripts": {
     "build": "babel src --out-dir build",
     "dev": "nodemon src/index.js --exec babel-node",
-    "start": "node build/index.js"
+    "start": "node build/index.js",
+    "standard": "standard"
   },
   "keywords": [],
   "author": "Grupo 7 - Ingeniería de Software II",
@@ -27,6 +28,7 @@
     "@babel/core": "^7.24.4",
     "@babel/node": "^7.23.9",
     "@babel/preset-env": "^7.24.4",
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "standard": "^17.1.0"
   }
 }

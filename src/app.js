@@ -16,6 +16,6 @@ app.get('/', (req, res) => {
     })
 })
 
-app.use(coursesRoutes)
+app.use('/courses', coursesRoutes)
 
 export default app
