@@ -6,4 +6,4 @@ const rolesSchema = new Schema({
   versionKey: false
 })
 
-export default model('Roles', rolesSchema)
+export default model('Rol', rolesSchema, 'rol')
