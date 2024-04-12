@@ -18,12 +18,12 @@ const usersSchema = new Schema({
   versionKey: false
 })
 
-usersSchema.statics.encryptContraseña = async (password) => {
+usersSchema.statics.encryptPassword = async (password) => {
   const salt = await bcrypt.genSalt(10)
   return await bcrypt.hash(password, salt)
 }
 
-usersSchema.statics.compareContraseña = async (password, passwordRecibida) => {
+usersSchema.statics.comparePassword = async (password, passwordRecibida) => {
   return await bcrypt.compare(password, passwordRecibida)
 }
 
