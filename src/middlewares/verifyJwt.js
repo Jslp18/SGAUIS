@@ -17,32 +17,32 @@ export const verifyToken = async (req, res, next) => {
   }
 }
 
-export const isSchool = async (req, res, next) => {
-  const user = await Users.findById(req.userId)
-  const rol = await Roles.findOne({ _id: user.rol })
+export const isSchool = async (req, res, next) => { // Función para verificar que el tipo de rol del usuario en este caso rol "Escuela"
+  const user = await Users.findById(req.userId) // req.userId es el Id que el token proporcionaba
+  const rol = await Roles.findOne({ _id: user.rol }) // Encontramos el rol que corresponde al id de rol del usuario
   if (rol.nombre === 'Escuela') {
-    next()
+    next() // Si el nombre de este rol es escuela continúa la operación
   } else {
-    return res.status(403).json({ mensaje: 'No tienes los permisos suficientes para realizar esta acción.' })
+    return res.status(403).json({ mensaje: 'No tienes los permisos suficientes para realizar esta acción.' }) // De lo contrario se necesitan permisos de "Escuela" para realizar esta operación
   }
 }
 
-export const isProfessor = async (req, res, next) => {
-  const user = await Users.findById(req.userId)
-  const rol = await Roles.findOne({ _id: user.rol })
+export const isProfessor = async (req, res, next) => { // Función para verificar que el tipo de rol del usuario en este caso rol "Profesor"
+  const user = await Users.findById(req.userId) // req.userId es el Id que el token proporcionaba
+  const rol = await Roles.findOne({ _id: user.rol }) // Encontramos el rol que corresponde al id de rol del usuario
   if (rol.nombre === 'Profesor') {
-    next()
+    next() // Si el nombre de este rol es escuela continúa la operación
   } else {
-    return res.status(403).json({ mensaje: 'No tienes los permisos suficientes para realizar esta acción.' })
+    return res.status(403).json({ mensaje: 'No tienes los permisos suficientes para realizar esta acción.' }) // De lo contrario se necesitan permisos de "Profesor" para realizar esta operación
   }
 }
 
-export const isEstudent = async (req, res, next) => {
-  const user = await Users.findById(req.userId)
-  const rol = await Roles.findOne({ _id: user.rol })
+export const isEstudent = async (req, res, next) => { // Función para verificar que el tipo de rol del usuario en este caso rol "Estudiante"
+  const user = await Users.findById(req.userId) // req.userId es el Id que el token proporcionaba
+  const rol = await Roles.findOne({ _id: user.rol }) // Encontramos el rol que corresponde al id de rol del usuario
   if (rol.nombre === 'Estudiante') {
-    next()
+    next() // Si el nombre de este rol es escuela continúa la operación
   } else {
-    return res.status(403).end()
+    return res.status(403).json({ mensaje: 'No tienes los permisos suficientes para realizar esta acción.' }) // De lo contrario se necesitan permisos de "Estudiante" para realizar esta operación
   }
 }
