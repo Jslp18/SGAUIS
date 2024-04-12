@@ -1,3 +1,3 @@
-import { verifyToken } from './verifyJwt'
+import * as verifyJwt from './verifyJwt'
 
-export { verifyToken }
+export { verifyJwt }

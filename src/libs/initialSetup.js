@@ -7,7 +7,7 @@ export const createRoles = async () => {
     if (count > 0) return
 
     await Promise.all([
-      new Roles({ nombre: 'Escuela Ingeniería de Sistemas' }).save(),
+      new Roles({ nombre: 'Escuela' }).save(),
       new Roles({ nombre: 'Profesor' }).save(),
       new Roles({ nombre: 'Estudiante' }).save()
     ])
