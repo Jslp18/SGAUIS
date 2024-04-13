@@ -25,7 +25,8 @@ export const createUsers = async () => {
     const count = await Users.estimatedDocumentCount()
     if (count > 0) return
     await Promise.all([
-      new Users({ codigo: '0000000', nombre: 'UIS', correo: 'uis@correo.uis.edu.co', password: await Users.encryptPassword('123456789'), rol: new ObjectId('661a033c50163523e2fe9446') }).save()
+      new Users({ codigo: '0000000', nombre: 'UIS', correo: 'uis@correo.uis.edu.co', password: await Users.encryptPassword('uisparatodos001'), rol: new ObjectId('661a033c50163523e2fe9446') }).save(),
+      new Users({ codigo: '0000011', nombre: 'Escuela de Ingeniería de Sistemas', correo: 'eisi@correo.uis.edu.co', password: await Users.encryptPassword('uisparatodos011'), rol: new ObjectId('661a033c50163523e2fe9446') }).save()
     ])
   } catch (error) {
     console.error(error)
