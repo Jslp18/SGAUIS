@@ -4,12 +4,15 @@ import pkg from '../package.json'
 import coursesRoutes from './routes/courses.routes'
 import authRoutes from './routes/auth.routes'
 import userRoutes from './routes/user.routes'
-import { createRoles } from './libs/initialSetup'
+import { createRoles, createUsers } from './libs/initialSetup'
+import cookieParser from 'cookie-parser'
 
 const app = express()
 createRoles()
+createUsers()
 app.use(morgan('dev'))
 app.use(express.json())
+app.use(cookieParser())
 app.set('pkg', pkg)
 
 app.get('/', (req, res) => {
@@ -21,8 +24,8 @@ app.get('/', (req, res) => {
   })
 })
 
-app.use('/courses', coursesRoutes)
+app.use('/cursos', coursesRoutes)
 app.use('/', authRoutes)
-app.use('/users', userRoutes)
+app.use('/usuarios', userRoutes)
 
 export default app

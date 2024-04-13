@@ -5,7 +5,8 @@ import Roles from '../models/roles.model.js'
 
 export const verifyToken = async (req, res, next) => {
   try {
-    const token = await req.headers['token-acceso'] // Se obtiene el token de acceso que viene en el header 'token-acceso'
+    const { token } = await req.cookies // Se obtiene el token de acceso que viene en el header 'token-acceso'
+    console.log(token)
     if (!token) return res.status(403).json({ mensaje: 'No se proporcionó un token de acceso. Por favor, verifica e intenta de nuevo.' })
     const userToken = jwt.verify(token, appConfig.secret) // Se verifica que el token que es proporcionado, efectivamente es el token que se le había otorgado al usuario
     req.userId = userToken.id
@@ -19,7 +20,9 @@ export const verifyToken = async (req, res, next) => {
 
 export const isSchool = async (req, res, next) => { // Función para verificar que el tipo de rol del usuario en este caso rol "Escuela"
   const user = await Users.findById(req.userId) // req.userId es el Id que el token proporcionaba
+  console.log(user)
   const rol = await Roles.findOne({ _id: user.rol }) // Encontramos el rol que corresponde al id de rol del usuario
+  console.log(rol)
   if (rol.nombre === 'Escuela') {
     next() // Si el nombre de este rol es escuela continúa la operación
   } else {

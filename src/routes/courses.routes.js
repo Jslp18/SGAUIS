@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { verifyJwt } from '../middlewares/importer.js'
 import * as coursesController from '../controllers/courses.controller'
+import { verifyJwt } from '../middlewares/importer.js'
 
 const router = Router()
 

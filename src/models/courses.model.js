@@ -1,9 +1,18 @@
 import { Schema, model } from 'mongoose'
 
 const coursesSchema = new Schema({
-  nombre: String,
-  descripcion: String,
-  imagenUrl: String,
+  nombre: {
+    type: String,
+    require: true
+  },
+  descripcion: {
+    type: String,
+    require: true
+  },
+  imagenUrl: {
+    type: String,
+    require: true
+  },
   foros: {
     ref: 'Foros',
     type: Schema.Types.ObjectId
