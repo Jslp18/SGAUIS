@@ -13,7 +13,7 @@ export const registerSchema = z.object({
     message: 'Correo electrónico inválido.'
   }),
   password: z.string({
-    required_error: 'La contraseñas es requerida.'
+    required_error: 'La contraseña es requerida.'
   }).min(14, { message: 'La contraseña debe contener mínimo 14 caracteres.' }).max(32, { message: 'La contraseña debe contener máximo 32 caracteres.' }),
   rol: z.enum(['Estudiante', 'Profesor'])
 })

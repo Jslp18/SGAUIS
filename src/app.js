@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.routes'
 import userRoutes from './routes/user.routes'
 import { createRoles, createUsers } from './libs/initialSetup'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 
 const app = express()
 createRoles()
@@ -13,6 +14,9 @@ createUsers()
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(cookieParser())
+app.use(cors({
+  origin: 'http://localhost:5173'
+}))
 app.set('pkg', pkg)
 
 app.get('/', (req, res) => {
