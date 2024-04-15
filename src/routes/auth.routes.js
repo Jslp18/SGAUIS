@@ -9,4 +9,6 @@ router.post('/iniciarSesion', validateSchema(loginSchema), authController.inicia
 
 router.post('/cerrarSesion', authController.cerrarSesion)
 
+router.get('/verify', authController.verify)
+
 export default router
