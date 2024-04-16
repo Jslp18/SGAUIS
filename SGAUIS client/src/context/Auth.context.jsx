@@ -18,10 +18,23 @@ export const AuthProvider = ({ children }) => {
   const [errors, setErrors] = useState([])
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+  const [registerData, setRegisterData] = useState([])
 
-  const signUp = async (user) => {
-    const res = await registrarUsuarios(user)
-    setUser(res.data)
+  const signUp = async (data) => {
+    try {
+      const response = await registrarUsuarios(data)
+      setRegisterData(response.data)
+      if (response.status === 200) {
+        setShowSuccessMessage(true)
+      } else { setShowSuccessMessage(false) }
+      return response.data
+    } catch (error) {
+      if (Array.isArray(error.response.data)) {
+        return setErrors(error.response.data)
+      }
+      setErrors([error.response.data.message])
+    }
   }
 
   const signIn = async (user) => {
@@ -45,6 +58,15 @@ export const AuthProvider = ({ children }) => {
       return () => clearTimeout(timer)
     }
   }, [errors])
+
+  useEffect(() => {
+    if (showSuccessMessage) {
+      const timer2 = setTimeout(() => {
+        setShowSuccessMessage(false)
+      }, 4000)
+      return () => clearTimeout(timer2)
+    }
+  }, [showSuccessMessage])
 
   useEffect(() => {
     async function checkLogin () {
@@ -76,7 +98,7 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ signUp, signIn, loading, user, isAuthenticated, errors }}>
+    <AuthContext.Provider value={{ signUp, signIn, loading, user, isAuthenticated, errors, showSuccessMessage, registerData }}>
       {children}
     </AuthContext.Provider>
   )

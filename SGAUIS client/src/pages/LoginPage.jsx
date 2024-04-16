@@ -7,7 +7,6 @@ function loginPage () {
   const { register, handleSubmit, watch, formState: { errors } } = useForm({ defaultValues: { rol: 'Estudiante' } })
   const { signIn, isAuthenticated, errors: signInErrors } = useAuth()
   const navigation = useNavigate()
-
   useEffect(() => {
     if (isAuthenticated) navigation('/SGAUIS/home')
   }, [isAuthenticated])

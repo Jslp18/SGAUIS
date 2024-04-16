@@ -1,10 +1,8 @@
 import Users from '../models/users.model'
 import Roles from '../models/roles.model.js'
-import { createAccessToken } from '../libs/jwt.js'
 
 export const createUser = async (req, res) => {
   const { codigo, nombre, correo, password, rol } = req.body // Obteniendo todos las credenciales de usuario de req.body
-
   const newUser = new Users({ codigo, nombre, correo, password: await Users.encryptPassword(password), rol }) // Creando el usuario y encriptando su comtraseña por medio de la función encryptContraseña declarada en el modelo "Users"
   try {
     const foundCodigo = await Users.findOne({ codigo: req.body.codigo }) // Consulta para verificar que el código no exista
@@ -22,11 +20,8 @@ export const createUser = async (req, res) => {
         const role = await Roles.findOne({ nombre: 'Estudiante' }) // Si no se define un req.body.rol entonces se asigna automáticamente el rol de estudiante
         newUser.rol = role._id
       }
-
       const savedUser = await newUser.save() // Guardando el usuario en base de datos
-      const token = await createAccessToken(savedUser._id)
-      res.cookie('token', token)
-      res.json({ id: savedUser._id, codigo: savedUser.codigo, nombre: savedUser.nombre, correo: savedUser.correo, rol: savedUser.rol })
+      res.json({ codigo: savedUser.codigo, nombre: savedUser.nombre, correo: savedUser.correo, rol })
     }
   } catch (error) {
     res.status(500).json({ message: error.message })

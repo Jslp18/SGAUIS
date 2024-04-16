@@ -20,7 +20,7 @@ export const checkRolExisted = async (req, res, next) => { // Función que verif
   if (rol) {
     const rolSave = await Roles.findOne({ nombre: rol }) // Consulta para verificar que existe el nombre del rol que se está pasando en el body con los que están en DB
     if (!rolSave) {
-      return res.status(400).json({ message: `El rol ${rol} no existe` }) // message que indica que el rol no existe
+      return res.status(400).json({ message: `El rol ${rol} no existe.` }) // message que indica que el rol no existe
     } else {
       next()
     } // Si el rol existe, entonces continúa la operación
