@@ -5,10 +5,17 @@ import { useNavigate } from 'react-router-dom'
 
 function loginPage () {
   const { register, handleSubmit, watch, formState: { errors } } = useForm({ defaultValues: { rol: 'Estudiante' } })
-  const { signIn, isAuthenticated, errors: signInErrors } = useAuth()
+  const { signIn, isAuthenticated, errors: signInErrors, user } = useAuth()
+  console.log(isAuthenticated, user?.rol)
   const navigation = useNavigate()
   useEffect(() => {
-    if (isAuthenticated) navigation('/SGAUIS/home')
+    if (isAuthenticated && user?.rol._id === '661a033c50163523e2fe9446') {
+      navigation('/Escuela')
+    } else if (isAuthenticated && user?.rol._id === '661a033c50163523e2fe9448') {
+      navigation('/Estudiante')
+    } else if (isAuthenticated && user?.rol._id === '661a033c50163523e2fe9447') {
+      navigation('/Profesor')
+    }
   }, [isAuthenticated])
 
   const onSubmit = handleSubmit(data => { signIn(data) })
