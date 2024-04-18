@@ -1,12 +1,11 @@
 import { useAuth } from '../context/Auth.context'
 import { Navigate, Outlet } from 'react-router-dom'
 
-function ProtectedRoute ({ children, rol }) {
+function ProtectedRoute ({ children, rol, redirectTo = '/' }) {
   const { isAuthenticated, loading } = useAuth()
   if (loading) return <h1> Loading... </h1>
   if (!loading && !isAuthenticated) return <Navigate to='/SGAUIS' replace />
-  if (rol === false) return <Navigate to='/' replace />
-
+  if (rol === false) return <Navigate to={redirectTo} />
   return children || <Outlet />
 }
 

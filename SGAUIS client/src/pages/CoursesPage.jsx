@@ -1,6 +1,6 @@
 function CoursesPage () {
   return (
-    <div>CoursesPage</div>
+    <div>Aquí se muestran los cursos</div>
   )
 }
 
