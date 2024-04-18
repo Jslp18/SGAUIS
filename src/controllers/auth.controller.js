@@ -14,12 +14,10 @@ export const iniciarSesion = async (req, res) => {
     if (rol !== userFound.rol.nombre) return res.status(404).json({ message: 'Lo siento, pero el tipo de usuario seleccionado no corresponde a tu cuenta. Por favor, selecciona el rol correcto e intenta de nuevo.' })
     res.cookie('token', token)
     res.json({
-      id: userFound._id,
       codigo: userFound.codigo,
       nombre: userFound.nombre,
       correo: userFound.correo,
-      rol: userFound.rol,
-      token // Respuesta con el token quitar después
+      rol: userFound.rol._id
     })
   } catch (error) {
     res.status(500).json({ message: error.message })

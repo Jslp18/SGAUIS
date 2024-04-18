@@ -3,10 +3,9 @@ import { Navigate, Outlet } from 'react-router-dom'
 
 function ProtectedRoute ({ children, rol }) {
   const { isAuthenticated, loading } = useAuth()
-
   if (loading) return <h1> Loading... </h1>
-  if (!loading && !isAuthenticated) return <Navigate to='/' replace />
-  if (rol) return <Navigate to='/' replace />
+  if (!loading && !isAuthenticated) return <Navigate to='/SGAUIS' replace />
+  if (rol === false) return <Navigate to='/' replace />
 
   return children || <Outlet />
 }

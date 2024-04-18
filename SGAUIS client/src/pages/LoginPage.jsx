@@ -3,26 +3,19 @@ import { useAuth } from '../context/Auth.context'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-function loginPage () {
+function LoginPage () {
   const { register, handleSubmit, watch, formState: { errors } } = useForm({ defaultValues: { rol: 'Estudiante' } })
-  const { signIn, isAuthenticated, errors: signInErrors, user } = useAuth()
-  console.log(isAuthenticated, user?.rol)
+  const { signIn, isAuthenticated, errors: signInErrors } = useAuth()
   const navigation = useNavigate()
   useEffect(() => {
-    if (isAuthenticated && user?.rol._id === '661a033c50163523e2fe9446') {
-      navigation('/Escuela')
-    } else if (isAuthenticated && user?.rol._id === '661a033c50163523e2fe9448') {
-      navigation('/Estudiante')
-    } else if (isAuthenticated && user?.rol._id === '661a033c50163523e2fe9447') {
-      navigation('/Profesor')
-    }
+    if (isAuthenticated) return navigation('/')
   }, [isAuthenticated])
 
   const onSubmit = handleSubmit(data => { signIn(data) })
   const value = watch('rol')
 
   return (
-    <div className='min-h-screen flex items-center justify-center w-full bg-gray-200'>
+    <div className='min-h-screen flex items-center justify-center w-full bg-gray-100'>
       <div className='bg-white text-gray-200 shadow-2xl rounded-lg my-4 px-8 py-6 w-1/3'>
         <h1 className='text-3xl font-bold text-center mb-4 text-gray-700'>¡Bienvenido!</h1>
         <p className='text-xl font-normal text-center mb-2 text-gray-700'> SGA UIS</p>
@@ -70,4 +63,4 @@ function loginPage () {
   )
 }
 
-export default loginPage
+export default LoginPage

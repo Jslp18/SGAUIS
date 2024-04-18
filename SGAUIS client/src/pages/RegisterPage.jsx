@@ -10,7 +10,7 @@ function registerPage () {
   })
 
   return (
-    <div className='min-h-screen flex items-center justify-center w-full bg-gray-200'>
+    <div className='min-h-screen flex items-center justify-center w-full bg-gray-100'>
       <div className='bg-white text-gray-200 shadow-md rounded-lg my-4 px-8 py-6 w-1/3'>
         {showSuccessMessage && (
           <div className='fixed z-10 inset-0 overflow-y-auto' aria-labelledby='modal-title' role='dialog' aria-modal='true'>
