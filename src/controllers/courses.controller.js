@@ -1,4 +1,6 @@
 import Courses from '../models/courses.model'
+import * as authController from '../controllers/auth.controller'
+import Cookies from 'js-cookie'
 
 export const getCourses = async (req, res) => {
   const courses = await Courses.find() // El método find busca todos los cursos que hayan
@@ -12,6 +14,10 @@ export const getCourseById = async (req, res) => {
 }
 
 export const createCourse = async (req, res) => {
+  const cookies = Cookies.get()
+  console.log(cookies)
+  const user = await authController.verify(cookies.token)
+  console.log(user.data)
   const { nombre, descripcion, imagenUrl } = req.body // Desde el req.boy se obtiene el nombre, descripción e imagenUrl
   const newCourse = new Courses({ nombre, descripcion, imagenUrl }) // Para crearlo se crea un curso con estos parámetros
   const savedCourse = await newCourse.save() // Aquí se guarda en base de datos

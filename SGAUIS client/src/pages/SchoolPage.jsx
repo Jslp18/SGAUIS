@@ -12,7 +12,6 @@ function SchoolPage () {
   const [showRegisterPage, setShowRegisterPage] = useState('home')
 
   const showRegister = (pagina) => {
-    console.log(pagina)
     setShowRegisterPage(pagina)
   }
 
