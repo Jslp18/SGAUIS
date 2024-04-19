@@ -71,15 +71,18 @@ function Content () {
 
 function Nav () {
   return (
-    <header className='text-gray-900 bg-blue-200 body-font shadow w-full'>
-      <div className='container mx-auto flex flex-wrap p-6 flex-col md:flex-row items-center'>
-        <nav className='flex lg:w-2/5 flex-wrap items-center text-base md:ml-auto'>
-          <Link to='/Estudiante' className='mr-10 cursor-pointer border-b border-transparent hover:border-blue-900'>Estudiante</Link>
-          <Link to='/Profesor' className='mr-10 cursor-pointer border-b border-transparent hover:border-blue-900'>Profesor</Link>
-          <Link to='/Escuela' className='mr-10 cursor-pointer border-b border-transparent hover:border-blue-900'>Escuela</Link>
+    <header className='text-gray-900 bg-stone-200 body-font shadow w-full'>
+      <div className='flex flex-wrap p-5 flex-row'>
+        <div className='w-1/5 flex flex-row items-center space-x-8'>
+          <svg xmlns='http://www.w3.org/2000/svg' fill='#918F8F' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-10 h-10 text-[#231F20] '><path stroke-linecap='round' stroke-linejoin='round' d='M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25' /></svg><h1 className='font-semibold text-4xl tracking-widest text-[#231F20] '>SGA UIS</h1>
+        </div>
+        <nav className='w-2/5 flex flex-row items-center text-base text-stone-900 space-x-8'>
+          <Link to='/Estudiante' className='px-4 py-2 mt-2 text-md font-semibold bg-transparent rounded-lg md:mt-0 md:ml-4 hover:text-white focus:text-white hover:bg-stone-400 focus:bg-stone-500 focus:outline-none focus:shadow-outline'>Estudiante</Link>
+          <Link to='/Profesor' className='px-4 py-2 mt-2 text-md font-semibold bg-transparent rounded-lg md:mt-0 md:ml-4 hover:text-white focus:text-white hover:bg-stone-400 focus:bg-stone-500 focus:outline-none focus:shadow-outline'>Profesor</Link>
+          <Link to='/Escuela' className='px-4 py-2 mt-2 text-md font-semibold bg-transparent rounded-lg md:mt-0 md:ml-4 hover:text-white focus:text-white hover:bg-stone-400 focus:bg-stone-500 focus:outline-none focus:shadow-outline'>Escuela</Link>
         </nav>
-        <div className='lg:w-2/5 flex flex-row items center lg:justify-end ml-5 lg:ml-0'>
-          <Link to='' className='flex justify-center py-2 px-3 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#506077] hover:bg-[#2E3744] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'>
+        <div className='w-2/5 flex flex-row items-center justify-end'>
+          <Link to='' className='flex justify-center py-2 px-3 border border-transparent rounded-xl shadow-lg text-sm font-medium text-white bg-neutral-700 hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'>
             Cerrar Sesión<span className='ml-5' /><svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth='2' stroke='currentColor' className='w-6 h-6'><path strokeLinecap='round' strokeLinejoin='round' d='M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15' /></svg>
           </Link>
         </div>

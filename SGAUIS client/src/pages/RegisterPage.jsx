@@ -10,9 +10,9 @@ function RegisterPage () {
   })
 
   return (
-    <div className='bg-white text-gray-200 shadow-md rounded-lg my-4 px-8 py-6 w-1/3'>
+    <div className='bg-white text-gray-200 shadow-md rounded-lg my-4 px-8 py-6 w-[45%]'>
       {showSuccessMessage && (
-        <div className='fixed z-10 inset-0 overflow-y-auto' aria-labelledby='modal-title' role='dialog' aria-modal='true'>
+        <div className='fixed z-10 inset-0 overflow-auto' aria-labelledby='modal-title' role='dialog' aria-modal='true'>
           <div className='flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
             <div className='fixed inset-0 bg-gray-900 bg-opacity-80 transition-opacity' aria-hidden='true'>
               <span className='hidden sm:inline-block sm:align-middle sm:h-screen' aria-hidden='true'>&#8203;</span>
@@ -55,23 +55,23 @@ function RegisterPage () {
         <div>
           <h1 className='block text-sm font-medium text-gray-700 mb-2'>Tipo de usuario</h1>
           <div className=' w-full place-items-center justify-between mb-4'>
-            <div className='flex gap-2 rounded-xl bg-gray-200 p-1 text-black'>
+            <div className='flex gap-2 rounded-xl bg-[#CCD3D9] p-1 text-black'>
               <div className='w-1/2'>
                 <input type='radio' {...register('rol')} value='Estudiante' checked={value === 'Estudiante'} id='estudiante' className='peer hidden' />
-                <label htmlFor='estudiante' className='block cursor-pointer select-none rounded-xl py-1 px-2 text-center text-sm peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white'>Estudiante</label>
+                <label htmlFor='estudiante' className='block cursor-pointer select-none rounded-xl py-1 px-2 text-center text-sm font-medium text-gray-900 peer-checked:bg-[#A1AFBA] peer-checked:font-bold peer-checked:text-white'>Estudiante</label>
               </div>
               <div className='w-1/2'>
                 <input type='radio' {...register('rol')} value='Profesor' checked={value === 'Profesor'} id='profesor' className='peer hidden' />
-                <label htmlFor='profesor' className='block cursor-pointer select-none rounded-xl py-1 px-2 text-center text-sm peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white'>Profesor</label>
+                <label htmlFor='profesor' className='block cursor-pointer select-none rounded-xl py-1 px-2 text-center text-sm font-medium text-gray-900 peer-checked:bg-[#A1AFBA] peer-checked:font-bold peer-checked:text-white'>Profesor</label>
               </div>
             </div>
           </div>
         </div>
-        <button type='submit' className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'>Crear usuario</button>
+        <button type='submit' className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#6A8595] hover:bg-[#2B4C5D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#273F4B]'>Crear usuario</button>
       </form>
       {
           signUpErrors.map((error, i) => (
-            <div className='bg-blue-200 p-2 text-gray-800 mt-4 rounded-lg text-justify' key={i}>
+            <div className='bg-indigo-100 p-2 text-stone-900 mt-4 rounded-lg text-justify' key={i}>
               {error}
             </div>
           ))
