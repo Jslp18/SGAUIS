@@ -3,14 +3,14 @@ import { useAuth } from '../context/Auth.context.jsx'
 
 function RegisterPage () {
   const { register, handleSubmit, watch, formState: { errors } } = useForm({ defaultValues: { rol: 'Estudiante' } })
-  const { signUp, errors: signUpErrors, showSuccessMessage, registerData } = useAuth()
+  const { signUp, errors: signUpErrors, showSuccessMessage, courseData } = useAuth()
   const value = watch('rol')
   const onSubmit = handleSubmit(async (values) => {
     await signUp(values)
   })
 
   return (
-    <div className='bg-white text-gray-200 shadow-md rounded-lg my-4 px-8 py-6 w-[45%]'>
+    <div className='bg-white text-gray-200 shadow-md rounded-lg my-4 px-8 py-6 w-[45%] place-self-center'>
       {showSuccessMessage && (
         <div className='fixed z-10 inset-0 overflow-auto' aria-labelledby='modal-title' role='dialog' aria-modal='true'>
           <div className='flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
@@ -20,7 +20,7 @@ function RegisterPage () {
                 <div className='bg-white sm:p-4 sm:pb-4'>
                   <div className='sm:mt-0 sm:ml-0 sm:text-center'>
                     <h3 className='text-lg leading-6 font-medium text-gray-900' id='modal-title'>
-                      {registerData.rol} {registerData.nombre} creado de forma satisfactoria.
+                      Curso {courseData.nombre} creado de forma satisfactoria.
                     </h3>
                   </div>
                 </div>
@@ -33,7 +33,7 @@ function RegisterPage () {
       <p className='text-base font-normal text-center mb-2 text-gray-700'>Formulario de registro de usuarios</p>
       <form onSubmit={onSubmit}>
         <div className='mb-2'>
-          <label htmlFor='Codigo' className='block text-sm font-medium text-gray-700 mb-2'>Código</label>
+          <label htmlFor='codigo' className='block text-sm font-medium text-gray-700 mb-2'>Código</label>
           <input type='text' {...register('codigo', { required: true })} id='codigo' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2' placeholder='Ingrese el código universitario' />
           {errors.codigo && (<p className='text-rose-400'>Por favor, completa este campo</p>)}
         </div>

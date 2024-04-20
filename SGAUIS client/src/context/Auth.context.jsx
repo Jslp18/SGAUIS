@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { registrarUsuarios, iniciarSesion, verifyTokenRequest } from '../api/auth'
+import { registrarUsuarios, iniciarSesion, verifyTokenRequest, crearCurso, verCursos } from '../api/auth'
 import Cookies from 'js-cookie'
 
 const AuthContext = createContext()
@@ -20,6 +20,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
   const [registerData, setRegisterData] = useState([])
+  const [courseData, setCourseData] = useState([])
+  const [courses, setCourses] = useState([])
 
   const signUp = async (data) => {
     try {
@@ -34,6 +36,43 @@ export const AuthProvider = ({ children }) => {
         return setErrors(error.response.data)
       }
       setErrors([error.response.data.message])
+    }
+  }
+  /* ---------------------------------------cursos--------------------------------------- */
+  const coursesCreate = async (data) => {
+    try {
+      const cookies = Cookies.get()
+      const config = {
+        headers: {
+          Authorization: `Bearer ${cookies.token}`
+        }
+      }
+      const response = await crearCurso(data, config)
+      setCourseData(response.data)
+      if (response.status === 201) {
+        setShowSuccessMessage(true)
+      } else { setShowSuccessMessage(false) }
+      return response.data
+    } catch (error) {
+      if (Array.isArray(error.response.data)) {
+        return setErrors(error.response.data)
+      }
+      setErrors([error.response.data.message])
+    }
+  }
+
+  const viewCourses = async () => {
+    try {
+      const cookies = Cookies.get()
+      const config = {
+        headers: {
+          Authorization: `Bearer ${cookies.token}`
+        }
+      }
+      const response = await verCursos(config)
+      setCourses(response.data)
+    } catch (error) {
+      console.error(error)
     }
   }
 
@@ -104,7 +143,22 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ signUp, signIn, logout, loading, user, isAuthenticated, errors, showSuccessMessage, registerData }}>
+    <AuthContext.Provider value={{
+      signUp,
+      signIn,
+      logout,
+      coursesCreate,
+      viewCourses,
+      loading,
+      user,
+      isAuthenticated,
+      errors,
+      showSuccessMessage,
+      registerData,
+      courseData,
+      courses
+    }}
+    >
       {children}
     </AuthContext.Provider>
   )

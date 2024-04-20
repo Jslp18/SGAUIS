@@ -21,7 +21,7 @@ function LoginPage () {
         <p className='text-xl font-normal text-center mb-2 text-gray-700'> SGA UIS</p>
         <form onSubmit={onSubmit}>
           <div className='mb-2'>
-            <label htmlFor='Codigo' className='block text-sm font-medium text-gray-700 mb-2'>Código</label>
+            <label htmlFor='codigo' className='block text-sm font-medium text-gray-700 mb-2'>Código</label>
             <input type='text' {...register('codigo', { required: true })} id='codigo' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2' placeholder='Ingrese el código universitario' />
             {errors.codigo && (<p className='text-rose-400'>Por favor, completa este campo</p>)}
           </div>

@@ -1,10 +1,18 @@
 import Courses from '../models/courses.model'
-import * as authController from '../controllers/auth.controller'
-import Cookies from 'js-cookie'
+import Users from '../models/users.model'
+import jwt from 'jsonwebtoken'
+import { appConfig } from '../config.js'
 
 export const getCourses = async (req, res) => {
-  const courses = await Courses.find() // El método find busca todos los cursos que hayan
-  res.status(200).json(courses) // Aquí se retornan los cursos
+  const { token } = req.cookies
+  if (!token) return res.status(401).json({ message: 'No autorizado.' })
+  jwt.verify(token, appConfig.secret, async (err, user) => {
+    if (err) return res.status(401).json({ message: 'No autorizado.' })
+    const userFound = await Users.findById(user.id)
+    if (!userFound) return res.status(401).json({ message: 'No autorizado.' })
+    const courses = await Courses.find({ creadoPor: userFound._id }) // El método find busca todos los cursos que hayan
+    res.status(200).json(courses) // Aquí se retornan los cursos
+  })
 }
 
 export const getCourseById = async (req, res) => {
@@ -14,14 +22,18 @@ export const getCourseById = async (req, res) => {
 }
 
 export const createCourse = async (req, res) => {
-  const cookies = Cookies.get()
-  console.log(cookies)
-  const user = await authController.verify(cookies.token)
-  console.log(user.data)
-  const { nombre, descripcion, imagenUrl } = req.body // Desde el req.boy se obtiene el nombre, descripción e imagenUrl
-  const newCourse = new Courses({ nombre, descripcion, imagenUrl }) // Para crearlo se crea un curso con estos parámetros
-  const savedCourse = await newCourse.save() // Aquí se guarda en base de datos
-  res.status(201).json(savedCourse) // Aquí se retorna el curso recién creado
+  const { token } = req.cookies
+  const { nombre, descripcion, imagenURL } = req.body // Desde el req.boy se obtiene el nombre, descripción e imagenUrl
+  if (!token) return res.status(401).json({ message: 'No autorizado.' })
+  jwt.verify(token, appConfig.secret, async (err, user) => {
+    if (err) return res.status(401).json({ message: 'No autorizado.' })
+    const userFound = await Users.findById(user.id)
+    if (!userFound) return res.status(401).json({ message: 'No autorizado.' })
+    const creadoPor = userFound._id
+    const newCourse = new Courses({ nombre, descripcion, imagenURL, creadoPor }) // Para crearlo se crea un curso con estos parámetros
+    const savedCourse = await newCourse.save() // Aquí se guarda en base de datos
+    res.status(201).json(savedCourse) // Aquí se retorna el curso recién creado
+  })
 }
 
 export const updateCourseById = async (req, res) => {

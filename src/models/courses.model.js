@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose'
+import { Schema, SchemaTypes, model } from 'mongoose'
 
 const coursesSchema = new Schema({
   nombre: {
@@ -9,9 +9,13 @@ const coursesSchema = new Schema({
     type: String,
     require: true
   },
-  imagenUrl: {
+  imagenURL: {
     type: String,
     require: true
+  },
+  creadoPor: {
+    ref: 'Users',
+    type: SchemaTypes.ObjectId
   },
   foros: {
     ref: 'Foros',

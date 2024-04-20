@@ -5,8 +5,6 @@ import LoginPage from './pages/LoginPage'
 import SchoolPage from './pages/SchoolPage'
 import StudentPage from './pages/StudentPage'
 import ProfesorPage from './pages/ProfesorPage'
-import CoursesPage from './pages/CoursesPage'
-import CoursesFormPage from './pages/CoursesFormPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import Home from './pages/Home'
 
@@ -61,10 +59,6 @@ function Content () {
             </ProtectedRoute>
           }
         />
-
-        <Route path='/cursos' element={<CoursesPage />} />
-        <Route path='/crearCurso' element={<CoursesFormPage />} />
-        <Route path='/cursos/:id' element={<CoursesFormPage />} />
       </Routes>
     </BrowserRouter>
   )
@@ -76,7 +70,7 @@ function Nav () {
     <header className='text-gray-900 bg-stone-200 body-font shadow w-full'>
       <div className='flex flex-wrap p-5 flex-row'>
         <div className='w-1/5 flex flex-row items-center space-x-8'>
-          <svg xmlns='http://www.w3.org/2000/svg' fill='#918F8F' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='w-10 h-10 text-[#231F20] ml-4'><path strokeLinecap='round' strokeLinejoin='round' d='M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25' /></svg><h1 className='font-semibold text-4xl tracking-widest text-[#231F20] '>SGA UIS</h1>
+          <svg xmlns='http://www.w3.org/2000/svg' fill='#918F8F' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='w-10 h-10 text-[#231F20] ml-4'><path strokeLinecap='round' strokeLinejoin='round' d='M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25' /></svg><h1 className='font-semibold text-4xl tracking-widest text-[#231F20]'>SGA UIS</h1>
         </div>
         <nav className='w-2/5 flex flex-row items-center text-base text-stone-900 space-x-8'>
           <Link to='/Estudiante' className='px-4 py-2 mt-2 text-md font-semibold bg-transparent rounded-lg md:mt-0 md:ml-4 hover:text-white focus:text-white hover:bg-stone-400 focus:bg-stone-500 focus:outline-none focus:shadow-outline'>Estudiante</Link>
