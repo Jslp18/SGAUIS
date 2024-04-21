@@ -13,7 +13,12 @@ export const iniciarSesion = async (req, res) => {
     const token = await createAccessToken(userFound._id) // Creación del token si las contraseñas coincidieron
     if (rol !== userFound.rol.nombre) return res.status(404).json({ message: 'Lo siento, pero el tipo de usuario seleccionado no corresponde a tu cuenta. Por favor, selecciona el rol correcto e intenta de nuevo.' })
     res.cookie('token', token)
-    res.json(userFound)
+    res.json({
+      codigo: userFound.codigo,
+      nombre: userFound.nombre,
+      correo: userFound.correo,
+      rol: userFound.rol._id
+    })
   } catch (error) {
     res.status(500).json({ message: error.message })
   }

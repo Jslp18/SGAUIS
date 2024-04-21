@@ -1,17 +1,19 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/Auth.context'
-import RegisterPage from './pages/RegisterPage'
 import LoginPage from './pages/LoginPage'
 import SchoolPage from './pages/SchoolPage'
 import StudentPage from './pages/StudentPage'
 import ProfesorPage from './pages/ProfesorPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import Home from './pages/Home'
+import { CoursesProvider } from './context/CoursesContext'
 
 function App () {
   return (
     <AuthProvider>
-      <Content />
+      <CoursesProvider>
+        <Content />
+      </CoursesProvider>
     </AuthProvider>
   )
 }
@@ -33,13 +35,6 @@ function Content () {
           path='/Escuela' element={
             <ProtectedRoute rol={user?.rol === '661a033c50163523e2fe9446'}>
               <SchoolPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='/Escuela/crearUsuarios' element={
-            <ProtectedRoute rol={user?.rol === '661a033c50163523e2fe9446'}>
-              <RegisterPage />
             </ProtectedRoute>
           }
         />

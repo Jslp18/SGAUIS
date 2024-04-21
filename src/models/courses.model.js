@@ -3,7 +3,8 @@ import { Schema, SchemaTypes, model } from 'mongoose'
 const coursesSchema = new Schema({
   nombre: {
     type: String,
-    require: true
+    require: true,
+    unique: true
   },
   descripcion: {
     type: String,

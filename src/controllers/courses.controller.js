@@ -16,9 +16,22 @@ export const getCourses = async (req, res) => {
 }
 
 export const getCourseById = async (req, res) => {
-  const { courseId } = req.params // Desde req.params se obtiene el courseId (Id del curso)
-  const course = await Courses.findById(courseId) // req.params.courseId es el id que se pasa como ruta así: http://localhost:1721/courses/courseId
-  res.status(200).json(course) // Aquí se retorna el curso si lo encontró con ese ID
+  const { token } = req.cookies
+  if (!token) return res.status(401).json({ message: 'No autorizado.' })
+  jwt.verify(token, appConfig.secret, async (err, user) => {
+    if (err) return res.status(401).json({ message: 'No autorizado.' })
+    const userFound = await Users.findById(user.id)
+    if (!userFound) return res.status(401).json({ message: 'No autorizado.' })
+    const { nombres } = req.params
+    const regex = new RegExp(nombres, 'i') // Expresión regular para buscar el nombre (ignorando mayúsculas/minúsculas)
+    try {
+      const courses = await Courses.find({ nombre: regex, creadoPor: userFound._id })
+      res.status(200).json(courses)
+    } catch (error) {
+      console.error('Error al buscar cursos:', error)
+      res.status(500).json({ error: 'Error al buscar cursos' })
+    }
+  })
 }
 
 export const createCourse = async (req, res) => {

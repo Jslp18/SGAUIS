@@ -3,7 +3,7 @@ import { useAuth } from '../context/Auth.context.jsx'
 
 function RegisterPage () {
   const { register, handleSubmit, watch, formState: { errors } } = useForm({ defaultValues: { rol: 'Estudiante' } })
-  const { signUp, errors: signUpErrors, showSuccessMessage, courseData } = useAuth()
+  const { signUp, errors: signUpErrors, showSuccessMessage, registerData } = useAuth()
   const value = watch('rol')
   const onSubmit = handleSubmit(async (values) => {
     await signUp(values)
@@ -20,7 +20,7 @@ function RegisterPage () {
                 <div className='bg-white sm:p-4 sm:pb-4'>
                   <div className='sm:mt-0 sm:ml-0 sm:text-center'>
                     <h3 className='text-lg leading-6 font-medium text-gray-900' id='modal-title'>
-                      Curso {courseData.nombre} creado de forma satisfactoria.
+                      {registerData.rol} {registerData.nombre} creado de forma satisfactoria.
                     </h3>
                   </div>
                 </div>
