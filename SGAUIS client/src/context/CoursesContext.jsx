@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { crearCurso, obtenerCurso, verCursos } from '../api/courses'
+import { crearCurso, eliminarCurso, obtenerCurso, verCursos } from '../api/courses'
 import Cookies from 'js-cookie'
 
 const CoursesContext = createContext()
@@ -35,7 +35,6 @@ export function CoursesProvider ({ children }) {
       } else { setShowSuccessMessage(false) }
       return response.data
     } catch (error) {
-      console.log(error.response.data)
       if (Array.isArray(error.response.data)) {
         return setErrors(error.response.data)
       }
@@ -69,7 +68,16 @@ export function CoursesProvider ({ children }) {
       const response = await obtenerCurso(nombres, config)
       return response.data
     } catch (error) {
-      console.error(error)
+      console.log(error)
+    }
+  }
+
+  const deleteCourse = async (idCurso) => {
+    try {
+      const res = await eliminarCurso(idCurso) 
+      return res
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -96,6 +104,7 @@ export function CoursesProvider ({ children }) {
       coursesCreate,
       viewCourses,
       getCoursesByName,
+      deleteCourse,
       courseData,
       courses,
       errors,

@@ -51,7 +51,7 @@ function ViewCourses () {
                 </div>
                 <div className='text-center pb-4 px-4'>
                   <p className='text-xl text-slate-900 font-bold mb-2'>{course.nombre}</p>
-                  <p className='text-base text-stone-700 font-normal text-justify overflow-x-auto'>{course.descripcion}</p>
+                  <p className='text-base text-stone-700 font-normal text-center'>{course.descripcion.substring(0, 40)}{course.descripcion.length > 40 ? '...' : ''}</p>
                 </div>
               </div>
             ))}

@@ -55,8 +55,8 @@ export const updateCourseById = async (req, res) => {
   res.status(200).json(updatedCourse) // Aquí se retorna el curso actualizado
 }
 
-export const deleteProductById = async (req, res) => {
+export const deleteCourseById = async (req, res) => {
   const { courseId } = req.params // Desde req.params se obtiene el courseId (Id del curso)
   await Courses.findByIdAndDelete(courseId) // Se elimina el curso por medio del courseId
-  res.status(204) // No se retornada nada como respuesta de la eliminación exitosa
+  res.sendStatus(204) // No se retornada nada como respuesta de la eliminación exitosa
 }

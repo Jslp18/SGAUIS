@@ -16,7 +16,7 @@ function SchoolPage () {
   }
 
   return (
-    <div className='text-gray-900 bg-slate-50 body-font shadow w-full overflow-y-auto'>
+    <div className='text-gray-900 bg-slate-100 body-font shadow w-full overflow-y-auto'>
       <div className='flex justify-start w-full h-[calc(100vh-11vh)]'>
         <div className='bg-white flex flex-col m-6 p-4 w-1/6 text-base rounded-lg border-2 border-black border-opacity-20 shadow-lg'>
           <div className='bg-[#545454] text-center rounded-lg mb-5 truncate md:overflow-clip'>
@@ -31,7 +31,7 @@ function SchoolPage () {
             <button onClick={() => showRegister('info')} className='flex flex-row space-x-2 group cursor-pointer my-2 py-1 px-1 text-md focus:bg-[#918F8F] focus:text-white rounded-md border border-transparent'><svg xmlns='http://www.w3.org/2000/svg' fill='#D4D4D4' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap='round' strokeLinejoin='round' d='m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z' /></svg><p className='text-[#2D2D2D] font-medium group-focus:font-bold group-focus:text-white'>Información</p></button>
           </div>
         </div>
-        <div className='bg-slate-50 w-5/6 h-[calc(100vh-11vh)] flex justify-center'>
+        <div className='bg-slate-100 w-5/6 h-[calc(100vh-11vh)] flex justify-center'>
           {showRegisterPage === 'home' && <Escuela />}
           {showRegisterPage === 'cursos' && <CoursesPage />}
           {showRegisterPage === 'inscribirUsuarios' && <UsersInscription />}
