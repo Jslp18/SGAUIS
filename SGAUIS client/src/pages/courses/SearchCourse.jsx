@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 function SearchCourse () {
-  const { getCoursesByName, deleteCourse, showSuccessMessage, errors: coursesErrors } = useCourses()
+  const { getCoursesByName, deleteCourse, editCourse, showSuccessMessage, errors: coursesErrors, courseData} = useCourses()
 
   const [nombre, setNombre] = useState('')
   const [busqueda, setBusqueda] = useState(false)
@@ -11,6 +11,7 @@ function SearchCourse () {
   const itemsPerPage = 3
   const [totalPages, setTotalPages] = useState(1)
   const [coursesSearch, setCoursesSearch] = useState([])
+  const [currentId, setCurrentId] = useState('')
 
   const handleSearch = async () => {
     setBusqueda(true)
@@ -23,11 +24,14 @@ function SearchCourse () {
 
   const eliminarCurso = async (idCurso) => {
     const res = await deleteCourse(idCurso)
-    console.log(res.status)
     if(res.status === 204){
-      console.log(coursesSearch.filter(course => course._id !== idCurso))
       setCoursesSearch(coursesSearch.filter(course => course._id !== idCurso))
     }
+  }
+
+  const editarCurso = async (courseId) => {
+    showCourse('editarCurso')
+    setCurrentId(courseId)
   }
 
   const indexOfLastItem = currentPage * itemsPerPage
@@ -37,7 +41,6 @@ function SearchCourse () {
   const paginate = (pageNumber) => setCurrentPage(pageNumber)
 
   const [showCoursePage, setShowCoursePage] = useState(null)
-  console.log(showCoursePage)
   const showCourse = (pagina) => {
     setShowCoursePage(pagina)
   }
@@ -46,9 +49,8 @@ function SearchCourse () {
 
   const { register, handleSubmit, formState: { errors } } = useForm()
 
-
   const onSubmit = handleSubmit(async (values) => {
-    await coursesCreate(values)
+    await editCourse(currentId, values)
   })
 
   return (
@@ -102,7 +104,7 @@ function SearchCourse () {
                         {course.imagenURL.substring(0, 20)}{course.imagenURL.length > 20 ? '...' : ''}
                         </td>
                         <td className='flex flex-row items-center justify-center p-4 gap-4'>
-                          <button onClick={() => showCourse('editarCurso')} className='flex flex-row items-center px-4 py-1 group cursor-pointer text-md bg-[#92A8C1] focus:bg-blue-300 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns='http://www.w3.org/2000/svg' fill='#FFF' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap='round' strokeLinejoin='round' d='m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125' /></svg><p className='text-black font-normal group-focus:text-black'>Editar Curso</p></button>
+                          <button onClick={() => {editarCurso(course._id)}} className='flex flex-row items-center px-4 py-1 group cursor-pointer text-md bg-[#92A8C1] focus:bg-blue-300 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns='http://www.w3.org/2000/svg' fill='#FFF' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap='round' strokeLinejoin='round' d='m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125' /></svg><p className='text-black font-normal group-focus:text-black'>Editar Curso</p></button>
                           <button onClick={() => {eliminarCurso(course._id)}} className='flex flex-row items-center px-4 py-1 group cursor-pointer text-md bg-[#c19492] focus:bg-red-300 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns='http://www.w3.org/2000/svg' fill='#FFF' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap='round' strokeLinejoin='round' d='m3 3 1.664 1.664M21 21l-1.5-1.5m-5.485-1.242L12 17.25 4.5 21V8.742m.164-4.078a2.15 2.15 0 0 1 1.743-1.342 48.507 48.507 0 0 1 11.186 0c1.1.128 1.907 1.077 1.907 2.185V19.5M4.664 4.664 19.5 19.5' /></svg><p className='text-black font-normal group-focus:text-black'>Eliminar Curso</p></button>
                         </td>
                       </tr>
@@ -160,7 +162,7 @@ function SearchCourse () {
               <div className='bg-white sm:p-4 sm:pb-4'>
                 <div className='sm:mt-0 sm:ml-0 sm:text-center'>
                   <h3 className='text-lg leading-6 font-medium text-gray-900' id='modal-title'>
-                    Curso {courseData.nombre} creado de forma satisfactoria.
+                    Curso {courseData.nombre} actualizado de forma satisfactoria.
                   </h3>
                 </div>
               </div>
