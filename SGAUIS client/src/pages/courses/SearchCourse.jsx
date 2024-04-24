@@ -58,7 +58,7 @@ function SearchCourse () {
   {showCoursePage !== 'editarCurso' && (
         <div className='flex-col w-[90%]'>
         <div className='border-2 border-stone-800 flex flex-row items-center gap-3 shadow-2xl rounded-md py-2 px-3 mt-4'>
-        <input type='text' placeholder='Ingrese el nombre de curso' value={nombre} onChange={(e) => setNombre(e.target.value)}  onKeyDown={(e) => {if (e.key === 'Enter') {handleSearch();}}}className='border-2 border-neutral-600 py-1 rounded-lg w-full pl-2' />
+        <input type='text' placeholder='Ingrese el nombre del curso' value={nombre} onChange={(e) => setNombre(e.target.value)}  onKeyDown={(e) => {if (e.key === 'Enter') {handleSearch();}}}className='border-2 border-stone-700 py-1 rounded-lg w-full pl-2 focus:border-stone-400 ' />
           <button onClick={handleSearch} className='bg-[#A1AFBA] hover:bg-white border-2 border-black text-white block mx-auto rounded-md font-sm font-medium transition hover:text-black transform scale-x-[-1] focus:outline-none active:transform active:scale-95'>
             <svg xmlns='http://www.w3.org/2000/svg' fill='#FFF' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-7 h-7 group-focus:text-[#2D2D2D] group-focus:fill-[#CCD3D9]'><path strokeLinecap='round' strokeLinejoin='round' d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z' /></svg>
           </button>
