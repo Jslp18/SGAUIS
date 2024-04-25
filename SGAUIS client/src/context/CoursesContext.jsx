@@ -90,7 +90,7 @@ export function CoursesProvider ({ children }) {
 
   const deleteCourse = async (idCurso) => {
     try {
-      const res = await eliminarCurso(idCurso) 
+      const res = await eliminarCurso(idCurso)
       return res
     } catch (error) {
       console.log(error)

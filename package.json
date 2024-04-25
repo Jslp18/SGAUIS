@@ -6,8 +6,7 @@
   "scripts": {
     "build": "babel src --out-dir build",
     "dev": "nodemon src/index.js --exec babel-node",
-    "start": "node build/index.js",
-    "standard": "standard"
+    "start": "node build/index.js"
   },
   "keywords": [],
   "author": "Grupo 7 - Ingeniería de Software II",
@@ -36,7 +35,7 @@
     "js-cookie": "^3.0.5",
     "nodemon": "^3.1.0",
     "postcss": "^8.4.38",
-    "standard": "^17.1.0",
+    "prettier": "3.2.5",
     "tailwindcss": "^3.4.3"
   }
 }

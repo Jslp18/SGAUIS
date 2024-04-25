@@ -43,15 +43,15 @@ function ViewCourses () {
       )}
       {courses.length !== 0 && (
         <div>
-          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-10 h-auto'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-10 h-auto '>
             {currentCourses.map((course, index) => (
-              <div key={index} className='w-full bg-gray-50 rounded-lg shadow-xl overflow-hidden flex flex-col border-2 border-black border-opacity-15'>
-                <div className='flex h-52 w-full '>
-                  <img className='object-cover object-center scale-75 shadow-2xl rounded-lg' src={course.imagenURL} alt={course.nombre} />
+              <div key={index} className='w-full bg-neutral-50 rounded-lg shadow-md overflow-hidden flex flex-col items-center border-2 border-black border-opacity-15'>
+                <div className='flex m-4 h-[70%] '>
+                  <img className='h-max shadow-2xl rounded-lg' src={course.imagenURL} alt={course.nombre} />
                 </div>
-                <div className='text-center pb-4 px-4'>
+                <div className='text-center pb-4 h-[30%]'>
                   <p className='text-xl text-slate-900 font-bold mb-2'>{course.nombre}</p>
-                  <p className='text-base text-stone-700 font-normal text-center'>{course.descripcion.substring(0, 40)}{course.descripcion.length > 40 ? '...' : ''}</p>
+                  <p className='text-base text-stone-700 font-normal text-center px-6'>{course.descripcion.substring(0, 70)}{course.descripcion.length > 70 ? '...' : ''}</p>
                 </div>
               </div>
             ))}

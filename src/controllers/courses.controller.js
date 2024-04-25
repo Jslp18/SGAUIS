@@ -23,7 +23,7 @@ export const getCourseById = async (req, res) => {
     const userFound = await Users.findById(user.id)
     if (!userFound) return res.status(401).json({ message: 'No autorizado.' })
     const { nombres } = req.params
-    const regex = new RegExp(nombres, 'i') // Expresión regular para buscar el nombre (ignorando mayúsculas/minúsculas)
+    const regex = new RegExp(`^${nombres}`, 'i')
     try {
       const courses = await Courses.find({ nombre: regex, creadoPor: userFound._id })
       res.status(200).json(courses)
@@ -51,6 +51,7 @@ export const createCourse = async (req, res) => {
 
 export const updateCourseById = async (req, res) => {
   const { courseId } = req.params // Desde req.params se obtiene el courseId (Id del curso)
+  console.log(req.body)
   const updatedCourse = await Courses.findByIdAndUpdate(courseId, req.body, { new: true }) // El parámetro new: true permite retornar el curso actualizado
   res.status(200).json(updatedCourse) // Aquí se retorna el curso actualizado
 }
