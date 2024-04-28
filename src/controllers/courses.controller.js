@@ -1,5 +1,7 @@
 import Courses from '../models/courses.model'
+import Roles from '../models/roles.model.js'
 import Users from '../models/users.model'
+import InscribeUsersCourses from '../models/inscribeUserCourse.model.js'
 import jwt from 'jsonwebtoken'
 import { appConfig } from '../config.js'
 
@@ -51,7 +53,6 @@ export const createCourse = async (req, res) => {
 
 export const updateCourseById = async (req, res) => {
   const { courseId } = req.params // Desde req.params se obtiene el courseId (Id del curso)
-  console.log(req.body)
   const updatedCourse = await Courses.findByIdAndUpdate(courseId, req.body, { new: true }) // El parámetro new: true permite retornar el curso actualizado
   res.status(200).json(updatedCourse) // Aquí se retorna el curso actualizado
 }
@@ -60,4 +61,17 @@ export const deleteCourseById = async (req, res) => {
   const { courseId } = req.params // Desde req.params se obtiene el courseId (Id del curso)
   await Courses.findByIdAndDelete(courseId) // Se elimina el curso por medio del courseId
   res.sendStatus(204) // No se retornada nada como respuesta de la eliminación exitosa
+}
+
+export const inscribeUserCourses = async (req, res) => {
+  const { courseId } = req.params // Desde req.params se obtiene el courseId (Id del curso)
+  const { codigo } = req.body
+  const userFound = await Users.findOne({codigo})
+  const rol = await Roles.findById(userFound.rol)
+  const inscribedUser = new InscribeUsersCourses({ users: userFound._id, courses: courseId})
+  await inscribedUser.save()
+  res.status(201).json({
+    nombre: userFound.nombre,
+    rol: rol.nombre
+  })
 }

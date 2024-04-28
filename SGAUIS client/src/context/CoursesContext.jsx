@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { actualizarCurso, crearCurso, eliminarCurso, obtenerCurso, verCursos } from '../api/courses'
+import { actualizarCurso, crearCurso, eliminarCurso, obtenerCurso, verCursos, inscribirUsuarios } from '../api/courses'
 import Cookies from 'js-cookie'
 
 const CoursesContext = createContext()
@@ -19,6 +19,7 @@ export function CoursesProvider ({ children }) {
   const [courses, setCourses] = useState([])
   const [errors, setErrors] = useState([])
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+  const [inscribedUser, setInscribedUser] = useState(null)
 
   const coursesCreate = async (data) => {
     try {
@@ -97,6 +98,24 @@ export function CoursesProvider ({ children }) {
     }
   }
 
+  const inscribeUser = async (idCurso, values) => {
+    console.log(values)
+    try {
+      const response = await inscribirUsuarios(idCurso, values)
+      console.log(response.data)
+      setInscribedUser(response.data)
+      if (response.status === 201) {
+        setShowSuccessMessage(true)
+      } else { setShowSuccessMessage(false) }
+      return response.data
+    } catch (error) {
+      if (Array.isArray(error.response.data)) {
+        return setErrors(error.response.data)
+      }
+      setErrors([error.response.data.message])
+    }
+  }
+
   useEffect(() => {
     if (errors.length > 0) {
       const timer = setTimeout(() => {
@@ -122,6 +141,8 @@ export function CoursesProvider ({ children }) {
       getCoursesByName,
       deleteCourse,
       editCourse,
+      inscribeUser,
+      inscribedUser,
       courseData,
       courses,
       errors,

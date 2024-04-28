@@ -1,4 +1,4 @@
-import { Schema, SchemaTypes, model } from 'mongoose'
+import { Schema, model } from 'mongoose'
 
 const coursesSchema = new Schema({
   nombre: {
@@ -16,7 +16,7 @@ const coursesSchema = new Schema({
   },
   creadoPor: {
     ref: 'Users',
-    type: SchemaTypes.ObjectId
+    type: Schema.Types.ObjectId
   },
   foros: {
     ref: 'Foros',

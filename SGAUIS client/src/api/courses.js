@@ -5,3 +5,5 @@ export const verCursos = (config) => axios.get('/cursos', config)
 export const obtenerCurso = (nombres, config) => axios.get(`/cursos/${nombres}`, config)
 export const eliminarCurso = (idCurso) => axios.delete(`/cursos/${idCurso}`)
 export const actualizarCurso = (idCurso, data) => axios.put(`/cursos/${idCurso}`, data)
+
+export const inscribirUsuarios = (idCurso, data) => axios.post(`/cursos/inscribirUsuarios/${idCurso}`, data)

@@ -5,7 +5,7 @@ import SchoolPage from './pages/SchoolPage'
 import StudentPage from './pages/StudentPage'
 import ProfesorPage from './pages/ProfesorPage'
 import ProtectedRoute from './components/ProtectedRoute'
-import Home from './pages/Home'
+import Home from './pages/school/Home'
 import { CoursesProvider } from './context/CoursesContext'
 
 function App () {
