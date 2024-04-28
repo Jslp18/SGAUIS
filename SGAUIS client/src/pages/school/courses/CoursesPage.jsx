@@ -32,7 +32,7 @@ function CoursesPage() {
 
 function Cursos() {
   return (
-    <img className='w-2/5 self-center opacity-65 mt-10' src={SGAUIS3} alt='SGA UIS: Sistema de Gestión de Aprendizaje Universidad Industrial de Santander.' />
+    <img className='w-[35%] self-center opacity-65 mt-20' src={SGAUIS3} alt='SGA UIS: Sistema de Gestión de Aprendizaje Universidad Industrial de Santander.' />
   )
 }
 

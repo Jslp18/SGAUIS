@@ -75,3 +75,17 @@ export const inscribeUserCourses = async (req, res) => {
     rol: rol.nombre
   })
 }
+
+export const undoInscribeUserCourses = async (req, res) => {
+  const { courseId } = req.params // Desde req.params se obtiene el courseId (Id del curso)
+  const { codigo } = req.body
+  const userFound = await Users.findOne({codigo})
+  const courseFound = await Courses.findById(courseId)
+  const rol = await Roles.findById(userFound.rol)
+  const inscribeUsersCourses = await InscribeUsersCourses.findOneAndDelete({ users: userFound._id, courses: courseId})
+  if(!inscribeUsersCourses) { return res.status(404).json({ message: `Lo siento, pero el usuario con código ${codigo} no se encuentra matriculado  en el curso ${courseFound.nombre}` })}
+  res.status(201).json({
+    nombre: userFound.nombre,
+    rol: rol.nombre
+  })
+}

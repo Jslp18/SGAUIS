@@ -3,13 +3,13 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 function SearchCourse() {
-  const { getCoursesByName, deleteCourse, editCourse, inscribeUser, inscribedUser, showSuccessMessage, errors: coursesErrors, courseData } = useCourses()
+  const { getCoursesByName, deleteCourse, editCourse, inscribeUser, inscribedUser, undoInscribeUser, undoInscribedUser, showSuccessMessage, errors: coursesErrors, courseData } = useCourses()
   const { register, handleSubmit, formState: { errors } } = useForm()
 
   const [name, setName] = useState('')
   const [search, setSearch] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 6
+  const itemsPerPage = 4
   const [totalPages, setTotalPages] = useState(1)
   const [coursesSearch, setCoursesSearch] = useState([])
   const [currentId, setCurrentId] = useState('')
@@ -77,11 +77,11 @@ function SearchCourse() {
     await editCourse(currentId, values)
   })
 
-  // Inscribir usuarios
+  // Matricula de  usuarios
 
-  const inscribirUsuarios = async (course) => {
+  const matricularUsuarios = async (course) => {
     setCurrentCourse(course)
-    showCourse('inscribirUsuarios')
+    showCourse('matricularUsuarios')
     const idCurso = course._id
     setCurrentId(idCurso)
   }
@@ -89,6 +89,18 @@ function SearchCourse() {
   const onInscribe = handleSubmit(async (value) => {
     await inscribeUser(currentId, value)
   })
+
+  const desmatricularUsuarios = async (course) => {
+    setCurrentCourse(course)
+    showCourse('desmatricularUsuarios')
+    const idCurso = course._id
+    setCurrentId(idCurso)
+  }
+
+  const onUndoInscribe = handleSubmit(async (value) => {
+    await undoInscribeUser(currentId, value)
+  })
+
 
   return (
     <div className='flex flex-col items-center justify-center'>
@@ -157,9 +169,14 @@ function SearchCourse() {
                             {course.imagenURL.substring(0, 20)}{course.imagenURL.length > 20 ? '...' : ''}
                           </td>
                           <td className='flex flex-row items-center justify-center p-4 gap-4'>
-                            <button onClick={() => { editarCurso(course) }} className='flex flex-row items-center px-4 py-1 group cursor-pointer text-md bg-[#92A8C1] hover:bg-blue-300 focus:bg-blue-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns='http://www.w3.org/2000/svg' fill='#FFF' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap='round' strokeLinejoin='round' d='m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125' /></svg><p className='text-black font-normal group-focus:text-black'>Editar Curso</p></button>
-                            <button onClick={() => { eliminarCurso(course._id) }} className='flex flex-row items-center px-4 py-1 group cursor-pointer text-md bg-[#c19492] hover:bg-red-300 focus:bg-red-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns='http://www.w3.org/2000/svg' fill='#FFF' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap='round' strokeLinejoin='round' d='m3 3 1.664 1.664M21 21l-1.5-1.5m-5.485-1.242L12 17.25 4.5 21V8.742m.164-4.078a2.15 2.15 0 0 1 1.743-1.342 48.507 48.507 0 0 1 11.186 0c1.1.128 1.907 1.077 1.907 2.185V19.5M4.664 4.664 19.5 19.5' /></svg><p className='text-black font-normal group-focus:text-black'>Eliminar Curso</p></button>
-                            <button onClick={() => { inscribirUsuarios(course) }} className='flex flex-row items-center px-4 py-1 group cursor-pointer text-md bg-[#bebebe] hover:bg-gray-300 focus:bg-gray-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns='http://www.w3.org/2000/svg' fill='#FFF' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap='round' strokeLinejoin='round' d='m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10' /></svg><p className='text-black font-normal group-focus:text-black'>Inscribir Usuarios</p></button>
+                            <div className='flex flex-col items-center justify-center gap-3'>
+                              <button onClick={() => { editarCurso(course) }} className='flex flex-row w-full items-center px-4 py-1 group cursor-pointer text-md bg-[#92A8C1] hover:bg-blue-300 focus:bg-blue-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns='http://www.w3.org/2000/svg' fill='#FFF' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap='round' strokeLinejoin='round' d='m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125' /></svg><p className='text-black font-normal group-focus:text-black'>Editar Curso</p></button>
+                              <button onClick={() => { eliminarCurso(course._id) }} className='flex flex-row w-full items-center px-4 py-1 group cursor-pointer text-md bg-[#c19492] hover:bg-red-300 focus:bg-red-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns='http://www.w3.org/2000/svg' fill='#FFF' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap='round' strokeLinejoin='round' d='m3 3 1.664 1.664M21 21l-1.5-1.5m-5.485-1.242L12 17.25 4.5 21V8.742m.164-4.078a2.15 2.15 0 0 1 1.743-1.342 48.507 48.507 0 0 1 11.186 0c1.1.128 1.907 1.077 1.907 2.185V19.5M4.664 4.664 19.5 19.5' /></svg><p className='text-black font-normal group-focus:text-black'>Eliminar Curso</p></button>
+                            </div>
+                            <div className='flex flex-col items-center justify-center gap-3'>
+                              <button onClick={() => { matricularUsuarios(course) }} className='flex flex-row w-full items-center px-4 py-1 group cursor-pointer text-md bg-[#AFAFAF] hover:bg-gray-300 focus:bg-gray-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns="http://www.w3.org/2000/svg" fill="#FFF" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap="round" strokeLinejoin="round" d="M12 10.5v6m3-3H9m4.06-7.19-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" /></svg><p className='text-black font-normal group-focus:text-black'>Matricular Usuarios</p></button>
+                              <button onClick={() => { desmatricularUsuarios(course)}} className='flex flex-row w-full items-center px-4 py-1 group cursor-pointer text-md bg-[#AFAFAF] hover:bg-gray-300 focus:bg-gray-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns="http://www.w3.org/2000/svg" fill="#FFF" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap="round" strokeLinejoin="round" d="M15 13.5H9m4.06-7.19-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" /></svg><p className='text-black font-normal group-focus:text-black'>Desmatricular Usuarios</p></button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -253,7 +270,7 @@ function SearchCourse() {
           }
         </div>
       )}
-      {showCoursePage === 'inscribirUsuarios' && (
+      {showCoursePage === 'matricularUsuarios' && (
         <div className='flex flex-row space-x-20 mt-10 py-6 px-4 rounded-lg w-[70%]'>
           <div className='w-[30%] gap-10 h-auto '>
             <div className='w-full bg-gray-100 rounded-3xl shadow-xl flex flex-col h-[80%] items-center border-2 border-black border-opacity-15'>
@@ -267,32 +284,83 @@ function SearchCourse() {
             </div>
           </div>
           <div className='w-[70%] flex flex-col items-center'>
-          {showSuccessMessage && (
-            <div className='fixed z-10 inset-0 overflow-auto' aria-labelledby='modal-title' role='dialog' aria-modal='true'>
-              <div className='flex items-end justify-center min-h-auto pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
-                <div className='fixed inset-0 bg-gray-900 bg-opacity-80 transition-opacity' aria-hidden='true'>
-                  <span className='hidden sm:inline-block sm:align-middle sm:h-screen' aria-hidden='true'>&#8203;</span>
-                  <div className='inline-block align-bottom bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full'>
-                    <div className='bg-white sm:p-4 sm:pb-4'>
-                      <div className='sm:mt-0 sm:ml-0 sm:text-center'>
-                        <h3 className='text-lg leading-6 font-medium text-gray-900' id='modal-title'>
-                          {inscribedUser.rol} {inscribedUser.nombre} inscrito al curso {currentCourse.nombre} de forma satisfactoria.
-                        </h3>
+            {showSuccessMessage && (
+              <div className='fixed z-10 inset-0 overflow-auto' aria-labelledby='modal-title' role='dialog' aria-modal='true'>
+                <div className='flex items-end justify-center min-h-auto pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
+                  <div className='fixed inset-0 bg-gray-900 bg-opacity-80 transition-opacity' aria-hidden='true'>
+                    <span className='hidden sm:inline-block sm:align-middle sm:h-screen' aria-hidden='true'>&#8203;</span>
+                    <div className='inline-block align-bottom bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full'>
+                      <div className='bg-white sm:p-4 sm:pb-4'>
+                        <div className='sm:mt-0 sm:ml-0 sm:text-center'>
+                          <h3 className='text-lg leading-6 font-medium text-gray-900' id='modal-title'>
+                            {inscribedUser.rol} {inscribedUser.nombre} matriculado al curso {currentCourse.nombre} de forma satisfactoria.
+                          </h3>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-            <h1 className='text-lg font-bold text-center text-gray-700'>Inscripción de usuarios</h1>
+            )}
+            <h1 className='text-lg font-bold text-center text-gray-700'>Matricular usuarios</h1>
             <form className='w-full mt-5' onSubmit={onInscribe}>
               <div className='mb-8'>
                 <label htmlFor='codigo' className='block text-lg font-medium text-gray-700 mb-2'>Código Universitario</label>
                 <input type='text' {...register('codigo', { required: true })} id='codigo' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2' placeholder='Ingrese el código universitario correspondiente al usuario' />
                 {errors.codigo && (<p className='text-rose-400'>Por favor, completa este campo.</p>)}
               </div>
-              <button type='submit' className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#6A8595] hover:bg-[#2B4C5D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#273F4B]'>Inscribir usuario</button>
+              <button type='submit' className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#6A8595] hover:bg-[#2B4C5D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#273F4B]'>Matricular usuario</button>
+            </form>
+            {
+              coursesErrors.map((error, i) => (
+                <div className='w-full bg-indigo-100 p-2 text-stone-900 mt-4 rounded-lg text-justify' key={i}>
+                  {error}
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      )}
+      {showCoursePage === 'desmatricularUsuarios' && (
+        <div className='flex flex-row space-x-20 mt-10 py-6 px-4 rounded-lg w-[70%]'>
+          <div className='w-[30%] gap-10 h-auto '>
+            <div className='w-full bg-gray-100 rounded-3xl shadow-xl flex flex-col h-[80%] items-center border-2 border-black border-opacity-15'>
+              <div className='flex m-4 h-[65%] items-center justify-center overflow-hidden border-2 border-gray-700 border-opacity-80 rounded-2xl'>
+                <img className='h-60 shadow-2xl rounded-lg' src={currentCourse.imagenURL} alt={currentCourse.nombre} />
+              </div>
+              <div className='text-start pb-2 h-[35%]'>
+                <p className='block pl-4 bg-gradient-to-tr from-zinc-400 to-slate-800 bg-clip-text font-sans text-xl font-semibold leading-relaxed text-transparent antialiased'>{currentCourse.nombre}</p>
+                <p className='text-base text-gray-900 font-normal px-4 text-justify'>{currentCourse.descripcion.substring(0, 70)}{currentCourse.descripcion.length > 70 ? '...' : ''}</p>
+              </div>
+            </div>
+          </div>
+          <div className='w-[70%] flex flex-col items-center'>
+            {showSuccessMessage && (
+              <div className='fixed z-10 inset-0 overflow-auto' aria-labelledby='modal-title' role='dialog' aria-modal='true'>
+                <div className='flex items-end justify-center min-h-auto pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
+                  <div className='fixed inset-0 bg-gray-900 bg-opacity-80 transition-opacity' aria-hidden='true'>
+                    <span className='hidden sm:inline-block sm:align-middle sm:h-screen' aria-hidden='true'>&#8203;</span>
+                    <div className='inline-block align-bottom bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full'>
+                      <div className='bg-white sm:p-4 sm:pb-4'>
+                        <div className='sm:mt-0 sm:ml-0 sm:text-center'>
+                          <h3 className='text-lg leading-6 font-medium text-gray-900' id='modal-title'>
+                            {undoInscribedUser.rol} {undoInscribedUser.nombre} eliminado del curso {currentCourse.nombre} de forma satisfactoria.
+                          </h3>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            <h1 className='text-lg font-bold text-center text-gray-700'>Desmatricular usuarios</h1>
+            <form className='w-full mt-5' onSubmit={onUndoInscribe}>
+              <div className='mb-8'>
+                <label htmlFor='codigo' className='block text-lg font-medium text-gray-700 mb-2'>Código Universitario</label>
+                <input type='text' {...register('codigo', { required: true })} id='codigo' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2' placeholder='Ingrese el código universitario correspondiente al usuario' />
+                {errors.codigo && (<p className='text-rose-400'>Por favor, completa este campo.</p>)}
+              </div>
+              <button type='submit' className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#6A8595] hover:bg-[#2B4C5D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#273F4B]'>Desmatricular usuario</button>
             </form>
             {
               coursesErrors.map((error, i) => (

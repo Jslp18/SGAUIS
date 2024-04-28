@@ -1,7 +1,6 @@
 import InscribeUserCourses from '../models/inscribeUserCourse.model'
 import Users from '../models/users.model'
 import Courses from '../models/courses.model'
-import Roles from '../models/roles.model';
 
 export const checkDuplicateCode = async (req, res, next) => { // Función para verificar si el código del usuario que se está intentando inscribir ya existe en un curso
   const { codigo } = req.body // Destructuración del req.body para la obtención del código
@@ -41,4 +40,4 @@ export const checkDuplicateCode = async (req, res, next) => { // Función para v
       next()
     }
   }
-};
+}
