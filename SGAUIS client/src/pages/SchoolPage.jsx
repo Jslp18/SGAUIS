@@ -42,7 +42,7 @@ function SchoolPage() {
 
 function Escuela() {
   return (
-    <img className='place-self-center opacity-65 w-2/5' src={SGAUIS2} alt='SGA UIS: Sistema de Gestión de Aprendizaje Universidad Industrial de Santander.' />
+    <img className='place-self-center opacity-85 w-2/5' src={SGAUIS2} alt='SGA UIS: Sistema de Gestión de Aprendizaje Universidad Industrial de Santander.' />
   )
 }
 

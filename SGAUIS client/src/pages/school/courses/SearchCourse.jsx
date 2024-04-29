@@ -1,6 +1,7 @@
 import { useCourses } from '../../../context/CoursesContext'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import SGAUIS4 from '../../../resources/SGA UIS 4.png'
 
 function SearchCourse() {
   const { getCoursesByName, deleteCourse, editCourse, inscribeUser, inscribedUser, undoInscribeUser, undoInscribedUser, showSuccessMessage, errors: coursesErrors, courseData } = useCourses()
@@ -19,8 +20,8 @@ function SearchCourse() {
 
 
   const handleSearch = async () => {
-    setSearch(true)
     const res = await getCoursesByName(name)
+    setSearch(true)
     setCoursesSearch(res)
     setTotalPages(Math.ceil(res.length / itemsPerPage))
     setCurrentPage(1)
@@ -101,12 +102,11 @@ function SearchCourse() {
     await undoInscribeUser(currentId, value)
   })
 
-
   return (
-    <div className='flex flex-col items-center justify-center'>
+    <div className='flex flex-col items-center'>
       {showCoursePage === 'busquedaCurso' && (
         <div className='flex-col w-[70%]'>
-          <div className='border-2 border-stone-800 flex flex-row items-center gap-3 shadow-2xl rounded-md py-2 px-3 mt-4'>
+          <div className='border-2 border-stone-800 flex flex-row items-center gap-3 rounded-md py-2 px-3 mt-4'>
             <div className='flex flex-col w-full'>
               <input type='text' placeholder='Ingrese el nombre del curso' value={name} onChange={(e) => coincidencias(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { handleSearch() } }} className='border-2 border-stone-700 py-1 rounded-lg w-full pl-2 focus:border-stone-500' />
               {name && showAutocomplete && (
@@ -127,10 +127,14 @@ function SearchCourse() {
               <svg xmlns='http://www.w3.org/2000/svg' fill='#FFF' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-7 h-7 group-focus:text-[#2D2D2D] group-focus:fill-[#CCD3D9]'><path strokeLinecap='round' strokeLinejoin='round' d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z' /></svg>
             </button>
           </div>
-
+          {!search && (
+            <div className='justify-center flex w-full bg-slate-100'>
+              <img className='w-[50%] opacity-75' src={SGAUIS4} alt='SGA UIS: Sistema de Gestión de Aprendizaje Universidad Industrial de Santander.' />
+            </div>
+          )}
           <div>
             {
-              search && (coursesSearch.length === 0) && (
+              search && coursesSearch.length === 0 && (
                 <div className='flex items-center mt-20'>
                   <h1 className='font-bold text-2xl coinstracking-widest text-[#231F20] text-opacity-35 text-center'>Lo sentimos, no pudimos encontrar ningún resultado para tu búsqueda. Por favor, inténtalo de nuevo.</h1>
                 </div>
@@ -175,7 +179,7 @@ function SearchCourse() {
                             </div>
                             <div className='flex flex-col items-center justify-center gap-3'>
                               <button onClick={() => { matricularUsuarios(course) }} className='flex flex-row w-full items-center px-4 py-1 group cursor-pointer text-md bg-[#AFAFAF] hover:bg-gray-300 focus:bg-gray-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns="http://www.w3.org/2000/svg" fill="#FFF" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap="round" strokeLinejoin="round" d="M12 10.5v6m3-3H9m4.06-7.19-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" /></svg><p className='text-black font-normal group-focus:text-black'>Matricular Usuarios</p></button>
-                              <button onClick={() => { desmatricularUsuarios(course)}} className='flex flex-row w-full items-center px-4 py-1 group cursor-pointer text-md bg-[#AFAFAF] hover:bg-gray-300 focus:bg-gray-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns="http://www.w3.org/2000/svg" fill="#FFF" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap="round" strokeLinejoin="round" d="M15 13.5H9m4.06-7.19-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" /></svg><p className='text-black font-normal group-focus:text-black'>Desmatricular Usuarios</p></button>
+                              <button onClick={() => { desmatricularUsuarios(course) }} className='flex flex-row w-full items-center px-4 py-1 group cursor-pointer text-md bg-[#AFAFAF] hover:bg-gray-300 focus:bg-gray-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns="http://www.w3.org/2000/svg" fill="#FFF" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap="round" strokeLinejoin="round" d="M15 13.5H9m4.06-7.19-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" /></svg><p className='text-black font-normal group-focus:text-black'>Desmatricular Usuarios</p></button>
                             </div>
                           </td>
                         </tr>
@@ -224,6 +228,7 @@ function SearchCourse() {
       )}
       {showCoursePage === 'editarCurso' && (
         <div className='bg-white text-gray-200 shadow-md rounded-lg px-8 mt-10 py-4 w-[35%]'>
+          <span><button className='flex flex-row select-none items-center gap-3 rounded-lg py-2 px-4 text-center align-middle font-sans text-md font-extrabold text-gray-800 transition-all hover:bg-gray-500/10 active:bg-gray-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' onClick={() => { showCourse('busquedaCurso') }}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>Volver</button></span>
           {showSuccessMessage && (
             <div className='fixed z-10 inset-0 overflow-auto' aria-labelledby='modal-title' role='dialog' aria-modal='true'>
               <div className='flex items-end justify-center min-h-auto pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
@@ -271,8 +276,8 @@ function SearchCourse() {
         </div>
       )}
       {showCoursePage === 'matricularUsuarios' && (
-        <div className='flex flex-row space-x-20 mt-10 py-6 px-4 rounded-lg w-[70%]'>
-          <div className='w-[30%] gap-10 h-auto '>
+        <div className='bg-white text-gray-200 shadow-2xl flex flex-row space-x-20 mt-10 py-6 px-8 rounded-md w-[70%]'>
+          <div className='w-[30%] flex gap-10 h-max self-center'>
             <div className='w-full bg-gray-100 rounded-3xl shadow-xl flex flex-col h-[80%] items-center border-2 border-black border-opacity-15'>
               <div className='flex m-4 h-[65%] items-center justify-center overflow-hidden border-2 border-gray-700 border-opacity-80 rounded-2xl'>
                 <img className='h-60 shadow-2xl rounded-lg' src={currentCourse.imagenURL} alt={currentCourse.nombre} />
@@ -283,7 +288,8 @@ function SearchCourse() {
               </div>
             </div>
           </div>
-          <div className='w-[70%] flex flex-col items-center'>
+          <div className='w-[70%] flex flex-col self-start'>
+            <span><button className='flex flex-row select-none items-center gap-3 rounded-lg py-2 px-4 text-center align-middle font-sans text-md font-extrabold text-gray-800 transition-all hover:bg-gray-500/10 active:bg-gray-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' onClick={() => { showCourse('busquedaCurso') }}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>Volver</button></span>
             {showSuccessMessage && (
               <div className='fixed z-10 inset-0 overflow-auto' aria-labelledby='modal-title' role='dialog' aria-modal='true'>
                 <div className='flex items-end justify-center min-h-auto pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
@@ -322,8 +328,8 @@ function SearchCourse() {
         </div>
       )}
       {showCoursePage === 'desmatricularUsuarios' && (
-        <div className='flex flex-row space-x-20 mt-10 py-6 px-4 rounded-lg w-[70%]'>
-          <div className='w-[30%] gap-10 h-auto '>
+        <div className='bg-white text-gray-200 shadow-2xl flex flex-row space-x-20 mt-10 py-6 px-8 rounded-md w-[70%]'>
+          <div className='w-[30%] gap-10 h-max self-center'>
             <div className='w-full bg-gray-100 rounded-3xl shadow-xl flex flex-col h-[80%] items-center border-2 border-black border-opacity-15'>
               <div className='flex m-4 h-[65%] items-center justify-center overflow-hidden border-2 border-gray-700 border-opacity-80 rounded-2xl'>
                 <img className='h-60 shadow-2xl rounded-lg' src={currentCourse.imagenURL} alt={currentCourse.nombre} />
@@ -334,7 +340,8 @@ function SearchCourse() {
               </div>
             </div>
           </div>
-          <div className='w-[70%] flex flex-col items-center'>
+          <div className='w-[70%] flex flex-col self-start'>
+            <span><button className='flex flex-row select-none items-center gap-3 rounded-lg py-2 px-4 text-center align-middle font-sans text-md font-extrabold text-gray-800 transition-all hover:bg-gray-500/10 active:bg-gray-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' onClick={() => { showCourse('busquedaCurso') }}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>Volver</button></span>
             {showSuccessMessage && (
               <div className='fixed z-10 inset-0 overflow-auto' aria-labelledby='modal-title' role='dialog' aria-modal='true'>
                 <div className='flex items-end justify-center min-h-auto pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
