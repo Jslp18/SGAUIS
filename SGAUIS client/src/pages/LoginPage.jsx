@@ -1,9 +1,9 @@
 import { useForm } from 'react-hook-form'
-import { useAuth } from '../context/Auth.context'
+import { useAuth } from '../context/AuthContext'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-function LoginPage () {
+function LoginPage() {
   const { register, handleSubmit, watch, formState: { errors } } = useForm({ defaultValues: { rol: 'Estudiante' } })
   const { signIn, isAuthenticated, errors: signInErrors } = useAuth()
   const navigation = useNavigate()
@@ -52,12 +52,12 @@ function LoginPage () {
           <button type='submit' className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#6A8595] hover:bg-[#2B4C5D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#273F4B]'>Iniciar Sesión</button>
         </form>
         {
-        signInErrors.map((error, i) => (
-          <div className='bg-indigo-100 p-2 text-stone-900 mt-4 rounded-lg text-justify' key={i}>
-            {error}
-          </div>
-        ))
-      }
+          signInErrors.map((error, i) => (
+            <div className='bg-indigo-100 p-2 text-stone-900 mt-4 rounded-lg text-justify' key={i}>
+              {error}
+            </div>
+          ))
+        }
       </div>
     </div>
   )

@@ -17,6 +17,7 @@ export const useCourses = () => {
 export function CoursesProvider ({ children }) {
   const [courseData, setCourseData] = useState([])
   const [courses, setCourses] = useState([])
+  const [search, setSearch] = useState(false)
   const [errors, setErrors] = useState([])
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
   const [inscribedUser, setInscribedUser] = useState(null)
@@ -54,6 +55,7 @@ export function CoursesProvider ({ children }) {
       }
       const response = await verCursos(config)
       setCourses(response.data)
+      setSearch(true)
     } catch (error) {
       console.error(error)
     }
@@ -70,7 +72,7 @@ export function CoursesProvider ({ children }) {
       const response = await obtenerCurso(nombres, config)
       return response.data
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 
@@ -95,15 +97,13 @@ export function CoursesProvider ({ children }) {
       const res = await eliminarCurso(idCurso)
       return res
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 
   const inscribeUser = async (idCurso, values) => {
-    console.log(values)
     try {
       const response = await inscribirUsuarios(idCurso, values)
-      console.log(response.data)
       setInscribedUser(response.data)
       if (response.status === 201) {
         setShowSuccessMessage(true)
@@ -120,7 +120,6 @@ export function CoursesProvider ({ children }) {
   const undoInscribeUser = async (idCurso, values) => {
     try {
       const response = await desinscribirUsuarios(idCurso, values)
-      console.log(response)
       setUndoInscribedUser(response.data)
       if (response.status === 201) {
         setShowSuccessMessage(true)
@@ -165,6 +164,7 @@ export function CoursesProvider ({ children }) {
       inscribedUser,
       courseData,
       courses,
+      search,
       errors,
       showSuccessMessage
     }}

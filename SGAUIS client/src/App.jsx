@@ -1,24 +1,27 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
-import { AuthProvider, useAuth } from './context/Auth.context'
+import { AuthProvider, useAuth } from './context/AuthContext'
 import LoginPage from './pages/LoginPage'
 import SchoolPage from './pages/SchoolPage'
 import StudentPage from './pages/StudentPage'
 import ProfesorPage from './pages/ProfesorPage'
 import ProtectedRoute from './components/ProtectedRoute'
-import Home from './pages/school/Home'
+import Home from './pages/Home'
 import { CoursesProvider } from './context/CoursesContext'
+import { ProfessorProvider } from './context/ProfessorContext'
 
-function App () {
+function App() {
   return (
     <AuthProvider>
       <CoursesProvider>
+        <ProfessorProvider>
         <Content />
+        </ProfessorProvider>
       </CoursesProvider>
     </AuthProvider>
   )
 }
 
-function Content () {
+function Content() {
   const { user } = useAuth()
   return (
     <BrowserRouter>
@@ -59,7 +62,7 @@ function Content () {
   )
 }
 
-function Nav () {
+function Nav() {
   const { logout } = useAuth()
   return (
     <header className='text-gray-900 bg-stone-200 body-font shadow w-full'>

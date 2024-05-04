@@ -18,7 +18,6 @@ function SearchCourse() {
   const [autocomplete, setAutocomplete] = useState([])
   const [showAutocomplete, setShowAutocomplete] = useState(false)
 
-
   const handleSearch = async () => {
     const res = await getCoursesByName(name)
     setSearch(true)
@@ -110,11 +109,11 @@ function SearchCourse() {
             <div className='flex flex-col w-full'>
               <input type='text' placeholder='Ingrese el nombre del curso' value={name} onChange={(e) => coincidencias(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { handleSearch() } }} className='border-2 border-stone-700 py-1 rounded-lg w-full pl-2 focus:border-stone-500' />
               {name && showAutocomplete && (
-                <div className="sticky bg-slate-300 mt-1 rounded-md shadow-md w-full z-10">
+                <div className='sticky bg-slate-300 mt-1 rounded-md shadow-md w-full z-10'>
                   {autocomplete.map((option, index) => (
                     <div
                       key={index}
-                      className="py-1 px-3 hover:bg-slate-400 cursor-pointer rounded-md"
+                      className='py-1 px-3 hover:bg-slate-400 cursor-pointer rounded-md'
                       onClick={() => selectAutocomplete(option)}
                     >
                       {option}
@@ -178,8 +177,8 @@ function SearchCourse() {
                               <button onClick={() => { eliminarCurso(course._id) }} className='flex flex-row w-full items-center px-4 py-1 group cursor-pointer text-md bg-[#c19492] hover:bg-red-300 focus:bg-red-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns='http://www.w3.org/2000/svg' fill='#FFF' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap='round' strokeLinejoin='round' d='m3 3 1.664 1.664M21 21l-1.5-1.5m-5.485-1.242L12 17.25 4.5 21V8.742m.164-4.078a2.15 2.15 0 0 1 1.743-1.342 48.507 48.507 0 0 1 11.186 0c1.1.128 1.907 1.077 1.907 2.185V19.5M4.664 4.664 19.5 19.5' /></svg><p className='text-black font-normal group-focus:text-black'>Eliminar Curso</p></button>
                             </div>
                             <div className='flex flex-col items-center justify-center gap-3'>
-                              <button onClick={() => { matricularUsuarios(course) }} className='flex flex-row w-full items-center px-4 py-1 group cursor-pointer text-md bg-[#AFAFAF] hover:bg-gray-300 focus:bg-gray-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns="http://www.w3.org/2000/svg" fill="#FFF" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap="round" strokeLinejoin="round" d="M12 10.5v6m3-3H9m4.06-7.19-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" /></svg><p className='text-black font-normal group-focus:text-black'>Matricular Usuarios</p></button>
-                              <button onClick={() => { desmatricularUsuarios(course) }} className='flex flex-row w-full items-center px-4 py-1 group cursor-pointer text-md bg-[#AFAFAF] hover:bg-gray-300 focus:bg-gray-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns="http://www.w3.org/2000/svg" fill="#FFF" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap="round" strokeLinejoin="round" d="M15 13.5H9m4.06-7.19-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" /></svg><p className='text-black font-normal group-focus:text-black'>Desmatricular Usuarios</p></button>
+                              <button onClick={() => { matricularUsuarios(course) }} className='flex flex-row w-full items-center px-4 py-1 group cursor-pointer text-md bg-[#AFAFAF] hover:bg-gray-300 focus:bg-gray-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns='http://www.w3.org/2000/svg' fill='#FFF' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap='round' strokeLinejoin='round' d='M12 10.5v6m3-3H9m4.06-7.19-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z' /></svg><p className='text-black font-normal group-focus:text-black'>Matricular Usuarios</p></button>
+                              <button onClick={() => { desmatricularUsuarios(course) }} className='flex flex-row w-full items-center px-4 py-1 group cursor-pointer text-md bg-[#AFAFAF] hover:bg-gray-300 focus:bg-gray-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns='http://www.w3.org/2000/svg' fill='#FFF' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap='round' strokeLinejoin='round' d='M15 13.5H9m4.06-7.19-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z' /></svg><p className='text-black font-normal group-focus:text-black'>Desmatricular Usuarios</p></button>
                             </div>
                           </td>
                         </tr>
@@ -228,7 +227,6 @@ function SearchCourse() {
       )}
       {showCoursePage === 'editarCurso' && (
         <div className='bg-white text-gray-200 shadow-md rounded-lg px-8 mt-10 py-4 w-[35%]'>
-          <span><button className='flex flex-row select-none items-center gap-3 rounded-lg py-2 px-4 text-center align-middle font-sans text-md font-extrabold text-gray-800 transition-all hover:bg-gray-500/10 active:bg-gray-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' onClick={() => { showCourse('busquedaCurso') }}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>Volver</button></span>
           {showSuccessMessage && (
             <div className='fixed z-10 inset-0 overflow-auto' aria-labelledby='modal-title' role='dialog' aria-modal='true'>
               <div className='flex items-end justify-center min-h-auto pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
@@ -276,7 +274,7 @@ function SearchCourse() {
         </div>
       )}
       {showCoursePage === 'matricularUsuarios' && (
-        <div className='bg-white text-gray-200 shadow-2xl flex flex-row space-x-20 mt-10 py-6 px-8 rounded-md w-[70%]'>
+        <div className='bg-white text-gray-200 shadow-2xl flex flex-row space-x-20 mt-10 py-8 px-8 rounded-md w-[70%]'>
           <div className='w-[30%] flex gap-10 h-max self-center'>
             <div className='w-full bg-gray-100 rounded-3xl shadow-xl flex flex-col h-[80%] items-center border-2 border-black border-opacity-15'>
               <div className='flex m-4 h-[65%] items-center justify-center overflow-hidden border-2 border-gray-700 border-opacity-80 rounded-2xl'>
@@ -289,7 +287,7 @@ function SearchCourse() {
             </div>
           </div>
           <div className='w-[70%] flex flex-col self-start'>
-            <span><button className='flex flex-row select-none items-center gap-3 rounded-lg py-2 px-4 text-center align-middle font-sans text-md font-extrabold text-gray-800 transition-all hover:bg-gray-500/10 active:bg-gray-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' onClick={() => { showCourse('busquedaCurso') }}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>Volver</button></span>
+            <span><button className='flex flex-row select-none items-center gap-3 rounded-lg py-2 px-4 text-center align-middle font-sans text-md font-extrabold text-gray-800 transition-all hover:bg-gray-500/10 active:bg-gray-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' onClick={() => { showCourse('busquedaCurso') }}><svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'><path strokeLinecap='round' strokeLinejoin='round' d='M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18' /></svg>Volver</button></span>
             {showSuccessMessage && (
               <div className='fixed z-10 inset-0 overflow-auto' aria-labelledby='modal-title' role='dialog' aria-modal='true'>
                 <div className='flex items-end justify-center min-h-auto pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
@@ -328,7 +326,7 @@ function SearchCourse() {
         </div>
       )}
       {showCoursePage === 'desmatricularUsuarios' && (
-        <div className='bg-white text-gray-200 shadow-2xl flex flex-row space-x-20 mt-10 py-6 px-8 rounded-md w-[70%]'>
+        <div className='bg-white text-gray-200 shadow-2xl flex flex-row space-x-20 mt-10 py-8 px-8 rounded-md w-[70%]'>
           <div className='w-[30%] gap-10 h-max self-center'>
             <div className='w-full bg-gray-100 rounded-3xl shadow-xl flex flex-col h-[80%] items-center border-2 border-black border-opacity-15'>
               <div className='flex m-4 h-[65%] items-center justify-center overflow-hidden border-2 border-gray-700 border-opacity-80 rounded-2xl'>
@@ -341,7 +339,7 @@ function SearchCourse() {
             </div>
           </div>
           <div className='w-[70%] flex flex-col self-start'>
-            <span><button className='flex flex-row select-none items-center gap-3 rounded-lg py-2 px-4 text-center align-middle font-sans text-md font-extrabold text-gray-800 transition-all hover:bg-gray-500/10 active:bg-gray-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' onClick={() => { showCourse('busquedaCurso') }}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>Volver</button></span>
+            <span><button className='flex flex-row select-none items-center gap-3 rounded-lg py-2 px-4 text-center align-middle font-sans text-md font-extrabold text-gray-800 transition-all hover:bg-gray-500/10 active:bg-gray-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' onClick={() => { showCourse('busquedaCurso') }}><svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'><path strokeLinecap='round' strokeLinejoin='round' d='M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18' /></svg>Volver</button></span>
             {showSuccessMessage && (
               <div className='fixed z-10 inset-0 overflow-auto' aria-labelledby='modal-title' role='dialog' aria-modal='true'>
                 <div className='flex items-end justify-center min-h-auto pt-4 px-4 pb-20 text-center sm:block sm:p-0'>

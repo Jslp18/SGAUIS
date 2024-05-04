@@ -1,4 +1,3 @@
-import InscribeUserCourses from '../models/inscribeUserCourse.model'
 import Users from '../models/users.model'
 import Courses from '../models/courses.model'
 

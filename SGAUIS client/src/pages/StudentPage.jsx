@@ -1,6 +1,6 @@
-import { useAuth } from '../context/Auth.context'
+import { useAuth } from '../context/AuthContext'
 
-function StudentPage () {
+function StudentPage() {
   const { user } = useAuth()
   return (
     <div>Bievenido Estudiante {user.nombre} </div>

@@ -1,13 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useCourses } from '../../../context/CoursesContext'
 
 function ViewCourses() {
-  const { viewCourses, courses } = useCourses()
-
-  useEffect(() => {
-    viewCourses()
-  }, [])
-
+  const { courses, search } = useCourses()
+  
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 3 // Puedes ajustar esto según tu preferencia
   const totalPages = Math.ceil(courses.length / itemsPerPage)
@@ -36,7 +32,7 @@ function ViewCourses() {
 
   return (
     <section className='mx-auto px-2 flex items-center w-[70%] justify-center mt-10'>
-      {courses.length === 0 && (
+      {search === true && courses.length === 0 && (
         <div className='flex items-center mt-20'>
           <h1 className='font-bold text-2xl tracking-widest text-[#231F20] text-opacity-35 text-center'>Parece que no has creado ningún curso</h1>
         </div>

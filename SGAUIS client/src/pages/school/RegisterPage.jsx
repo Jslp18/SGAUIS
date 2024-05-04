@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { useAuth } from '../../context/Auth.context.jsx'
+import { useAuth } from '../../context/AuthContext.jsx'
 
 function RegisterPage() {
   const { register, handleSubmit, watch, formState: { errors } } = useForm({ defaultValues: { rol: 'Estudiante' } })

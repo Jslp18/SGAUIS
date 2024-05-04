@@ -8,7 +8,7 @@ import { inscribeUsersSchema } from '../schemas/inscribeUsers.schema.js'
 const router = Router()
 
 router.get('/', verifyJwt.verifyToken, coursesController.getCourses)
-router.get('/:nombres', verifyJwt.verifyToken, coursesController.getCourseById)
+router.get('/:nombres', [verifyJwt.verifyToken, verifyJwt.isSchool], coursesController.getCourseById)
 router.post('/', [verifyJwt.verifyToken, verifyJwt.isSchool, validateSchema(coursesSchema), validateCoursename.checkDuplicateName], coursesController.createCourse)
 router.put('/:courseId', [verifyJwt.verifyToken, verifyJwt.isSchool], coursesController.updateCourseById)
 router.delete('/:courseId', [verifyJwt.verifyToken, verifyJwt.isSchool], coursesController.deleteCourseById)
