@@ -16,6 +16,8 @@ export const useProfessor = () => {
 
 export function ProfessorProvider({ children }) {
 
+  const [search, setSearch] = useState(false)
+
   // Mostrar los cursos correspondientes al profesor
   const [professorCourses, setProfessorCourses] = useState([])
 
@@ -35,6 +37,7 @@ export function ProfessorProvider({ children }) {
       }
       const response = await verCursosProfesor(config)
       setProfessorCourses(response.data)
+      setSearch(true)
     } catch (error) {
       console.error(error)
     }
@@ -57,7 +60,8 @@ export function ProfessorProvider({ children }) {
       setCurrentCourse,
       professorCourses,
       studentsCourse,
-      currentCourse
+      currentCourse,
+      search
     }}
     >
       {children}
