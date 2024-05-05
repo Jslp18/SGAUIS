@@ -8,7 +8,7 @@ function LoginPage() {
   const { signIn, isAuthenticated, errors: signInErrors } = useAuth()
   const navigation = useNavigate()
   useEffect(() => {
-    if (isAuthenticated) return navigation('/SGAUIS')
+    if (isAuthenticated) return navigation('/Home')
   }, [isAuthenticated])
 
   const onSubmit = handleSubmit(data => { signIn(data) })

@@ -185,7 +185,7 @@ function CoursesProfessor() {
                 </div>
                 </div>
                 <div className='w-[60%]'>
-                        Aquí se gestiona el contenido del curso
+                  Aquí se gestiona el contenido del curso
                 </div>
                 </div>
               )}

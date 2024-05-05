@@ -8,6 +8,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Home from './pages/Home'
 import { CoursesProvider } from './context/CoursesContext'
 import { ProfessorProvider } from './context/ProfessorContext'
+import SGAUIS7 from './resources/SGA UIS 7.png'
 
 function App() {
   return (
@@ -28,12 +29,10 @@ function Content() {
       {user && <Nav />}
       <Routes>
         <Route index element={<LoginPage />} />
-        <Route path='/' element={<LoginPage />} />
-
+        <Route path='/SGAUIS' element={<LoginPage />} />
         <Route element={<ProtectedRoute />}>
-          <Route path='/SGAUIS' element={<Home />} />
+          <Route path='/Home' element={<Home />} />
         </Route>
-
         <Route
           path='/Escuela' element={
             <ProtectedRoute rol={user?.rol === '661a033c50163523e2fe9446'}>
@@ -41,7 +40,6 @@ function Content() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path='/Profesor' element={
             <ProtectedRoute rol={user?.rol === '661a033c50163523e2fe9447'}>
@@ -49,7 +47,6 @@ function Content() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path='/Estudiante' element={
             <ProtectedRoute rol={user?.rol === '661a033c50163523e2fe9448'}>
@@ -57,6 +54,7 @@ function Content() {
             </ProtectedRoute>
           }
         />
+        <Route path='*' element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   )
@@ -82,6 +80,22 @@ function Nav() {
         </div>
       </div>
     </header>
+  )
+}
+
+function NotFoundPage() {
+  const { isAuthenticated } = useAuth()
+  const height = isAuthenticated ? 'calc(100vh - 11vh)' : '100vh'
+
+  return (
+    <div className='text-gray-900 bg-slate-100 body-font shadow w-full overflow-y-auto'>
+      <div className='flex flex-col items-center justify-center w-full' style={{ height: height }}>
+        <h1 className='p-2 font-bold text-6xl coinstracking-widest text-[#231F20] text-opacity-85 text-center'>Página no encontrada</h1>
+        <img className='mt-14 place-self-center opacity-85 w-[25%]' src={SGAUIS7} alt='SGA UIS: Sistema de Gestión de Aprendizaje Universidad Industrial de Santander.' />
+        <p className='p-2 font-medium text-4xl coinstracking-widest text-[#231F20] text-opacity-85 text-center'>Lo sentimos, pero la página que estás buscando no existe.</p>
+        <Link className='font-medium block bg-gradient-to-tr from-neutral-800 to-blue-400 bg-clip-text font-sans text-3xl leading-relaxed text-transparent antialiased' to='/SGAUIS'>Volver a la página de inicio</Link>
+      </div>
+    </div>
   )
 }
 
