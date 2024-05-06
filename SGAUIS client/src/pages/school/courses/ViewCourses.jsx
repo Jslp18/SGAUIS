@@ -3,6 +3,7 @@ import { useCourses } from '../../../context/CoursesContext'
 
 function ViewCourses() {
   const { courses, search } = useCourses()
+  console.log(courses)
   
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 3 // Puedes ajustar esto según tu preferencia

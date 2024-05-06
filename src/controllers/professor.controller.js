@@ -27,3 +27,8 @@ export const getStudentsCourses = async (req, res) => {
     const studentsCourse = usersCourse.filter(user => user.rol.toString() === '661a033c50163523e2fe9448');
     res.status(200).json(studentsCourse) // Aquí se retornan los estudiantes matriculados al curso
 }
+
+export const uploadContent = async (req, res) => {
+    const { courseId } = req.params // Desde req.params se obtiene el courseId (Id del curso)  
+    console.log(req.file)
+}

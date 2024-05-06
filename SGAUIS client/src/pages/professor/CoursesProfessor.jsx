@@ -5,11 +5,13 @@ import SGAUIS6 from '../../resources/SGA UIS 6.png'
 
 
 function CoursesProfessor() {
-  const { professorCourses, getStudentsCourse, studentsCourse, setStudentsCourse, search, searchStudents, setSearchStudents, selectedFile, setSelectedFile } = useProfessor()
-
   const { register, handleSubmit, formState: { errors } } = useForm()
 
+  const { professorCourses, getStudentsCourse, studentsCourse, setStudentsCourse, search, searchStudents, 
+    setSearchStudents, selectedFile, setSelectedFile, contentUpload, errors: contentErros, showSuccessMessage } = useProfessor()
+
   const [currentCourse, setCurrentCourse] = useState(null)
+  const [currentId, setCurrentId] = useState('')
   const itemsPerPage = 7
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
@@ -31,6 +33,7 @@ function CoursesProfessor() {
     setCurrentCourse(course)
     showCourse('contenidoCurso')
     const idCurso = course._id
+    setCurrentId(idCurso)
     const res = await getStudentsCourse(idCurso)
     setStudentsCourse(res)
     setTotalPages(Math.ceil(res.length / itemsPerPage))
@@ -39,11 +42,8 @@ function CoursesProfessor() {
   }
 
   const indexOfLastItem = currentPage * itemsPerPage
-  console.log('El último: ', indexOfLastItem)
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  console.log('El primero: ', indexOfFirstItem)
   const currentStudents = studentsCourse.slice(indexOfFirstItem, indexOfLastItem)
-  console.log(currentStudents)
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber)
 
@@ -56,8 +56,11 @@ function CoursesProfessor() {
 
   // Subir contenido
   const onContent = handleSubmit(async (values) => {
-    // await editCourse(currentId, values)
-    console.log(values)
+    const formData = new FormData() // Crea un objeto FormData para enviar el formulario
+    formData.append('nombre', values.nombre) // Agrega los valores del formulario al objeto FormData
+    formData.append('descripcion', values.descripcion)
+    formData.append('pdf', selectedFile) // Agrega el archivo seleccionado al objeto FormData
+    await contentUpload(currentId, formData) // Envía el formData al backend
   })
 
   const handleFileChange = (event) => {
@@ -66,7 +69,7 @@ function CoursesProfessor() {
   }
 
   return (
-    <div className='flex flex-col items-center w-full ml-3 my-6 mr-6'>
+    <div className='flex flex-col w-full ml-3 my-6 mr-6'>
       {showProfessorPage === 'profesorCurso' && (
         <div className='flex items-center justify-center w-full'>
           {
@@ -137,72 +140,70 @@ function CoursesProfessor() {
             )}
           {
             studentsCourse.length !== 0 && (
-              <div className='flex flex-row w-full ml-10'>
-                <div className='w-[45%]'>
-                  <div className='relative overflow-x-auto shadow-gray-500 shadow-2xl rounded-xl w-full bg-slate-100'>
-                    <div>
-                      <span><button className='mt-2 ml-2 flex flex-row select-none items-center gap-3 rounded-lg py-2 px-4 text-center align-middle font-sans text-md font-extrabold text-gray-800 transition-all hover:bg-slate-500/20 active:bg-slate-500/40 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' onClick={() => { volver() }}><svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'><path strokeLinecap='round' strokeLinejoin='round' d='M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18' /></svg>Volver</button></span>
-                      <h1 className='block pl-4 bg-gradient-to-bl from-gray-400 to-slate-950 bg-clip-text font-sans text-2xl font-semibold leading-relaxed text-transparent antialiased text-center'>Estudiantes matriculados</h1>
-                    </div>
-                    <table className='w-full text-sm text-left rtl:text-right text-neutral-800'>
-                      <thead className='text-xs text-gray-800 uppercase bg-sky-950/25'>
-                        <tr>
+              <div className='flex flex-row w-full ml-6'>
+                <div className='w-[45%] flex flex-col mt-8 overflow-x-auto shadow-gray-500 shadow-2xl rounded-xl bg-slate-100'>
+                  <div>
+                    <span><button className='mt-2 ml-2 flex flex-row select-none items-center gap-3 rounded-lg py-2 px-4 text-center align-middle font-sans text-md font-extrabold text-gray-800 transition-all hover:bg-slate-500/20 active:bg-slate-500/40 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' onClick={() => { volver() }}><svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'><path strokeLinecap='round' strokeLinejoin='round' d='M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18' /></svg>Volver</button></span>
+                    <h1 className='block pl-4 bg-gradient-to-bl from-gray-400 to-slate-950 bg-clip-text font-sans text-2xl font-semibold leading-relaxed text-transparent antialiased text-center'>Estudiantes matriculados</h1>
+                  </div>
+                  <table className='w-full text-sm text-left rtl:text-right text-neutral-800'>
+                    <thead className='text-xs text-gray-800 uppercase bg-sky-950/25'>
+                      <tr>
                         <th scope='col' className='px-6 py-3'>
-                            Número
-                          </th>
-                          <th scope='col' className='px-6 py-3'>
-                            Código Universitario
-                          </th>
-                          <th scope='col' className='px-6 py-3'>
-                            Nombre
-                          </th>
-                          <th scope='col' className='px-6 py-3'>
-                            Correo electrónico
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {currentStudents.map((student, index) => (
-                          <tr key={index} className='bg-zinc-200 border border-transparent hover:bg-zinc-300'>
-                            <th scope='row' className='px-6 py-1 font-normal'>
+                          Número
+                        </th>
+                        <th scope='col' className='px-6 py-3'>
+                          Código Universitario
+                        </th>
+                        <th scope='col' className='px-6 py-3'>
+                          Nombre
+                        </th>
+                        <th scope='col' className='px-6 py-3'>
+                          Correo electrónico
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {currentStudents.map((student, index) => (
+                        <tr key={index} className='bg-zinc-200 border border-transparent hover:bg-zinc-300'>
+                          <th scope='row' className='px-6 py-1 font-normal'>
                             {indexOfFirstItem + index + 1}
-                            </th>
-                            <td className='px-6 py-6 font-medium text-gray-900'>
-                              {student.codigo}
-                            </td>
-                            <td className='px-6 py-6'>
-                              {student.nombre}
-                            </td>
-                            <td className='px-6 py-6'>
-                              {student.correo}
-                            </td>
-                          </tr>
+                          </th>
+                          <td className='px-6 py-6 font-medium text-ellipsis overflow-hidden ...'>
+                            {student.codigo}
+                          </td>
+                          <td className='px-6 py-6'>
+                            {student.nombre}
+                          </td>
+                          <td className='px-6 py-6'>
+                            {student.correo}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className='my-4 flex justify-center'>
+                    <nav className='block'>
+                      <ul className='flex list-none flex-row space-x-5 items-center'>
+                        <li>
+                          <button className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage === 1 ? 'bg-[#A1AFBA] text-white' : ''}`} onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+                            Anterior
+                          </button>
+                        </li>
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                          <li key={number}>
+                            <button className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage === number ? 'bg-[#A1AFBA] text-white' : ''}`} onClick={() => paginate(number)}>
+                              {number}
+                            </button>
+                          </li>
                         ))}
-                      </tbody>
-                    </table>
-                    <div className='my-2 flex justify-center'>
-                      <nav className='block'>
-                        <ul className='flex list-none flex-row space-x-5 items-center'>
-                          <li>
-                            <button className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage === 1 ? 'bg-[#A1AFBA] text-white' : ''}`} onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
-                              Anterior
-                            </button>
-                          </li>
-                          {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
-                            <li key={number}>
-                              <button className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage === number ? 'bg-[#A1AFBA] text-white' : ''}`} onClick={() => paginate(number)}>
-                                {number}
-                              </button>
-                            </li>
-                          ))}
-                          <li>
-                            <button className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage === totalPages ? 'bg-[#A1AFBA] text-white' : ''}`} onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages}>
-                              Siguiente
-                            </button>
-                          </li>
-                        </ul>
-                      </nav>
-                    </div>
+                        <li>
+                          <button className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage === totalPages ? 'bg-[#A1AFBA] text-white' : ''}`} onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages}>
+                            Siguiente
+                          </button>
+                        </li>
+                      </ul>
+                    </nav>
                   </div>
                 </div>
                 <div className='w-[55%] flex flex-col items-center'>
@@ -228,7 +229,7 @@ function CoursesProfessor() {
                         </div>
                       )} */}
                       <h1 className='font-bold text-xl coinstracking-widest text-neutral-700 text-center'>Gestión de contenido</h1>
-                      <form onSubmit={onContent}>
+                      <form onSubmit={onContent} encType='multipart/form-data'>
                         <div className='mb-2'>
                           <label htmlFor='name' className='block text-sm font-medium text-gray-700 mb-2'>Nombre del tema</label>
                           <input type='text' {...register('nombre', { required: true })} id='name' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2' placeholder='Ingrese el nombre del tema que va a subir' />
@@ -249,7 +250,7 @@ function CoursesProfessor() {
                           </label>
                           <div className="mt-1 relative">
                             <input
-                            {...register('pdf', { required: true })}
+                              {...register('pdf', { required: true })}
                               id="upload-pdf"
                               type="file"
                               accept=".pdf"

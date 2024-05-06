@@ -9,7 +9,7 @@ function CreateCourse() {
   })
 
   return (
-    <div className='bg-white text-gray-200 shadow-2xl rounded-lg px-8 py-4 w-[35%] place-self-center mt-10'>
+    <div className='bg-white text-gray-200 shadow-2xl shadow-gray-400 rounded-lg px-8 py-4 w-[35%] place-self-center mt-10'>
       {showSuccessMessage && (
         <div className='fixed z-10 inset-0 overflow-auto' aria-labelledby='modal-title' role='dialog' aria-modal='true'>
           <div className='flex items-end justify-center min-h-auto pt-4 px-4 pb-20 text-center sm:block sm:p-0'>

@@ -4,8 +4,8 @@ import Profesor from '../../resources/desk-svgrepo-com.svg'
 function Info() {
   const { user } = useAuth()
   return (
-    <div className='flex flex-row items-center justify-center place-self-center h-[40%] w-[60%] rounded-xl bg-slate-200 text-gray-700 shadow-lg shadow-stone-600'>
-      <svg className='place-self-center w-[45%] h-full bg-stone-100 rounded-xl shadow-md shadow-stone-600 p-2'>
+    <div className='flex flex-row items-center justify-center place-self-center h-[40%] w-[60%] rounded-xl bg-slate-200 text-gray-700 shadow-lg shadow-stone-500'>
+      <svg className='place-self-center w-[45%] h-full bg-stone-100 rounded-xl shadow-md shadow-gray-400 p-2'>
         <use xlinkHref={Profesor + '#Layer_1'} />
       </svg>
       <div className='pt-6 text-center w-[55%]'>

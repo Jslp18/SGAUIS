@@ -1,5 +1,5 @@
-import { createContext, useContext, useState } from 'react'
-import { verCursosProfesor, verEstudiantesCurso } from '../api/professor'
+import { createContext, useContext, useState, useEffect } from 'react'
+import { verCursosProfesor, verEstudiantesCurso, subirContenido } from '../api/professor'
 import Cookies from 'js-cookie'
 
 const ProfessorContext = createContext()
@@ -31,6 +31,11 @@ export function ProfessorProvider({ children }) {
   // Manejo de la subida de archivo
   const [selectedFile, setSelectedFile] = useState(null)
 
+  // Manejo de la petición de guardado de contenido
+  const [contentData, setContentData] = useState([])
+  const [errors, setErrors] = useState([])
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+
   const viewProfessorCourses = async () => {
     try {
       const cookies = Cookies.get()
@@ -56,6 +61,46 @@ export function ProfessorProvider({ children }) {
     }
   }
 
+  const contentUpload = async (idCurso, values) => {
+    try {
+      const cookies = Cookies.get()
+      const config = {
+        headers: {
+          Authorization: `Bearer ${cookies.token}`
+        }
+      }
+      const response = await subirContenido(idCurso, values, config)
+      setContentData(response.data)
+      if (response.status === 201) {
+        setShowSuccessMessage(true)
+      } else { setShowSuccessMessage(false) }
+      return response.data
+    } catch (error) {
+      if (Array.isArray(error.response.data)) {
+        return setErrors(error.response.data)
+      }
+      setErrors([error.response.data.message])
+    }
+  }
+
+  useEffect(() => {
+    if (errors.length > 0) {
+      const timer = setTimeout(() => {
+        setErrors([])
+      }, 7000)
+      return () => clearTimeout(timer)
+    }
+  }, [errors])
+
+  useEffect(() => {
+    if (showSuccessMessage) {
+      const timer2 = setTimeout(() => {
+        setShowSuccessMessage(false)
+      }, 3000)
+      return () => clearTimeout(timer2)
+    }
+  }, [showSuccessMessage])
+
   return (
     <ProfessorContext.Provider value={{
       viewProfessorCourses,
@@ -64,12 +109,16 @@ export function ProfessorProvider({ children }) {
       setCurrentCourse,
       setSearchStudents,
       setSelectedFile,
+      contentUpload,
       professorCourses,
       studentsCourse,
       currentCourse,
       search,
       searchStudents,
-      selectedFile
+      selectedFile,
+      contentData,
+      errors,
+      showSuccessMessage
     }}
     >
       {children}

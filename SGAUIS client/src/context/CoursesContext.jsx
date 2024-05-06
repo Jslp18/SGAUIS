@@ -25,13 +25,7 @@ export function CoursesProvider ({ children }) {
 
   const coursesCreate = async (data) => {
     try {
-      const cookies = Cookies.get()
-      const config = {
-        headers: {
-          Authorization: `Bearer ${cookies.token}`
-        }
-      }
-      const response = await crearCurso(data, config)
+      const response = await crearCurso(data)
       setCourseData(response.data)
       if (response.status === 201) {
         setShowSuccessMessage(true)
