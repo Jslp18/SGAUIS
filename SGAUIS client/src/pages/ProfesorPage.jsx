@@ -10,11 +10,16 @@ function ProfessorPage() {
 
   const { user } = useAuth()
   const [showRegisterPage, setShowRegisterPage] = useState('home')
+
+  const { viewProfessorCourses, setSearchStudents, setStudentsCourse, setSelectedFile } = useProfessor()
+
   const showRegister = (pagina) => {
     setShowRegisterPage(pagina)
+    setSearchStudents(false)
+    setStudentsCourse([])
+    setSelectedFile(null)
   }
 
-  const { viewProfessorCourses } = useProfessor()
   useEffect(() => {
     viewProfessorCourses()
   }, [])

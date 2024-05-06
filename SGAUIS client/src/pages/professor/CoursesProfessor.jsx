@@ -1,41 +1,68 @@
 import { useState } from 'react'
 import { useProfessor } from '../../context/ProfessorContext'
+import { useForm } from 'react-hook-form'
 import SGAUIS6 from '../../resources/SGA UIS 6.png'
 
 
 function CoursesProfessor() {
+  const { professorCourses, getStudentsCourse, studentsCourse, setStudentsCourse, search, searchStudents, setSearchStudents, selectedFile, setSelectedFile } = useProfessor()
 
-  const { professorCourses, getStudentsCourse, studentsCourse, setStudentsCourse, search } = useProfessor()
+  const { register, handleSubmit, formState: { errors } } = useForm()
+
   const [currentCourse, setCurrentCourse] = useState(null)
-  const [currentId, setCurrentId] = useState('')
   const itemsPerPage = 7
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
 
   const [showProfessorPage, setProfessorPage] = useState('profesorCurso')
-
-  const indexOfLastItem = currentPage * itemsPerPage
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentStudents = studentsCourse.slice(indexOfFirstItem, indexOfLastItem)
-
-  const [searchStudents, setSearchStudents] = useState(false)
+  const [showContentPage, setContentPage] = useState('')
+  const [showFormContent, setShowFormContent] = useState(false)
 
   const showCourse = (pagina) => {
     setProfessorPage(pagina)
+  }
+
+  const showContent = (pagina) => {
+    setShowFormContent(!showFormContent); // Alternar entre true y false
+    setContentPage(pagina);
   }
 
   const contenidoCurso = async (course) => {
     setCurrentCourse(course)
     showCourse('contenidoCurso')
     const idCurso = course._id
-    await getStudentsCourse(idCurso)
+    const res = await getStudentsCourse(idCurso)
+    setStudentsCourse(res)
+    setTotalPages(Math.ceil(res.length / itemsPerPage))
+    setCurrentPage(1)
     setSearchStudents(true)
   }
+
+  const indexOfLastItem = currentPage * itemsPerPage
+  console.log('El último: ', indexOfLastItem)
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage
+  console.log('El primero: ', indexOfFirstItem)
+  const currentStudents = studentsCourse.slice(indexOfFirstItem, indexOfLastItem)
+  console.log(currentStudents)
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber)
 
   const volver = () => {
     showCourse('profesorCurso')
     setStudentsCourse([])
     setSearchStudents(false)
+    setSelectedFile(null)
+  }
+
+  // Subir contenido
+  const onContent = handleSubmit(async (values) => {
+    // await editCourse(currentId, values)
+    console.log(values)
+  })
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0]
+    setSelectedFile(file)
   }
 
   return (
@@ -53,7 +80,7 @@ function CoursesProfessor() {
             professorCourses.length !== 0 && (
               <div className='relative overflow-x-auto shadow-gray-500 shadow-2xl rounded-md w-full'>
                 <table className='w-full text-sm text-left rtl:text-right text-neutral-800'>
-                  <thead className='text-xs text-gray-800 uppercase bg-gray-100'>
+                  <thead className='text-xs text-gray-800 uppercase'>
                     <tr>
                       <th scope='col' className='px-6 py-3'>
                         Nombre del curso
@@ -101,95 +128,157 @@ function CoursesProfessor() {
               <img className='w-[50%] opacity-80' src={SGAUIS6} alt='SGA UIS: Sistema de Gestión de Aprendizaje Universidad Industrial de Santander.' />
             </div>
           )}
-            {
-              searchStudents && studentsCourse.length === 0 && (
-                <div className='relative mt-20 w-full'>
-                  <span><button className='mt-2 ml-2 flex flex-row select-none items-center gap-3 rounded-lg py-2 px-4 text-center align-middle font-sans text-md font-extrabold text-gray-800 transition-all hover:bg-gray-500/10 active:bg-gray-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' onClick={() => { volver() }}><svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'><path strokeLinecap='round' strokeLinejoin='round' d='M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18' /></svg>Volver</button></span>
-                  <h1 className='mt-4 font-bold text-4xl coinstracking-widest text-[#231F20] text-opacity-35 text-center'>Ups, parece que no hay ningún estudiante matriculado en el curso {currentCourse.nombre}. Ponte en contácto con tu respectiva escuela.</h1>
-                </div>
-              )}
-            <div className='w-full'>
-            {
-              studentsCourse.length !== 0 && (
-                <div className='flex flex-row w-full'>
-                <div className='w-[40%]'>
-                <div className='relative overflow-x-auto shadow-gray-500 shadow-2xl rounded-xl w-full'>
-                  <div>
-                    <span><button className='mt-2 ml-2 flex flex-row select-none items-center gap-3 rounded-lg py-2 px-4 text-center align-middle font-sans text-md font-extrabold text-gray-800 transition-all hover:bg-gray-500/10 active:bg-gray-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' onClick={() => { volver() }}><svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'><path strokeLinecap='round' strokeLinejoin='round' d='M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18' /></svg>Volver</button></span>
-                    <h1 className='block pl-4 bg-gradient-to-bl from-gray-400 to-slate-950 bg-clip-text font-sans text-2xl font-semibold leading-relaxed text-transparent antialiased text-center'>Estudiantes matriculados</h1>
-                  </div>
-                  <table className='w-full text-sm text-left rtl:text-right text-neutral-800'>
-                    <thead className='text-xs text-gray-800 uppercase bg-gray-100'>
-                      <tr>
+          {
+            searchStudents && studentsCourse.length === 0 && (
+              <div className='relative mt-20 w-full'>
+                <span><button className='mt-2 ml-2 flex flex-row select-none items-center gap-3 rounded-lg py-2 px-4 text-center align-middle font-sans text-md font-extrabold text-gray-800 transition-all hover:bg-slate-500/20 active:bg-slate-500/40 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' onClick={() => { volver() }}><svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'><path strokeLinecap='round' strokeLinejoin='round' d='M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18' /></svg>Volver</button></span>
+                <h1 className='mt-4 font-bold text-4xl coinstracking-widest text-[#231F20] text-opacity-35 text-center'>Ups, parece que no hay ningún estudiante matriculado en el curso {currentCourse.nombre}. Ponte en contácto con tu respectiva escuela.</h1>
+              </div>
+            )}
+          {
+            studentsCourse.length !== 0 && (
+              <div className='flex flex-row w-full ml-10'>
+                <div className='w-[45%]'>
+                  <div className='relative overflow-x-auto shadow-gray-500 shadow-2xl rounded-xl w-full bg-slate-100'>
+                    <div>
+                      <span><button className='mt-2 ml-2 flex flex-row select-none items-center gap-3 rounded-lg py-2 px-4 text-center align-middle font-sans text-md font-extrabold text-gray-800 transition-all hover:bg-slate-500/20 active:bg-slate-500/40 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' onClick={() => { volver() }}><svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'><path strokeLinecap='round' strokeLinejoin='round' d='M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18' /></svg>Volver</button></span>
+                      <h1 className='block pl-4 bg-gradient-to-bl from-gray-400 to-slate-950 bg-clip-text font-sans text-2xl font-semibold leading-relaxed text-transparent antialiased text-center'>Estudiantes matriculados</h1>
+                    </div>
+                    <table className='w-full text-sm text-left rtl:text-right text-neutral-800'>
+                      <thead className='text-xs text-gray-800 uppercase bg-sky-950/25'>
+                        <tr>
                         <th scope='col' className='px-6 py-3'>
-                          Código Universitario
-                        </th>
-                        <th scope='col' className='px-6 py-3'>
-                          Nombre
-                        </th>
-                        <th scope='col' className='px-6 py-3'>
-                          Correo electrónico
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {currentStudents.map((student, index) => (
-                        <tr key={index} className='bg-zinc-200 border border-transparent hover:bg-zinc-300'>
-                          <th scope='row' className='px-6 py-1 font-medium text-gray-900 whitespace-nowrap'>
-                            {student.codigo}
+                            Número
                           </th>
-                          <td className='px-6 py-3'>
-                            {student.nombre}
-                          </td>
-                          <td className='px-6 py-3'>
-                            {student.correo}
-                          </td>
+                          <th scope='col' className='px-6 py-3'>
+                            Código Universitario
+                          </th>
+                          <th scope='col' className='px-6 py-3'>
+                            Nombre
+                          </th>
+                          <th scope='col' className='px-6 py-3'>
+                            Correo electrónico
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  <div className='my-2 flex justify-center'>
-                    <nav className='block'>
-                      <ul className='flex list-none flex-row space-x-5 items-center'>
-                        <li>
-                          <button
-                            className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage === 1 ? 'bg-[#A1AFBA] text-white' : ''}`}
-                            onClick={() => paginate(currentPage - 1)}
-                            disabled={currentPage === 1}
-                          >
-                            Anterior
-                          </button>
-                        </li>
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
-                          <li key={number}>
-                            <button
-                              className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage === number ? 'bg-[#A1AFBA] text-white' : ''}`}
-                              onClick={() => paginate(number)}
-                            >
-                              {number}
+                      </thead>
+                      <tbody>
+                        {currentStudents.map((student, index) => (
+                          <tr key={index} className='bg-zinc-200 border border-transparent hover:bg-zinc-300'>
+                            <th scope='row' className='px-6 py-1 font-normal'>
+                            {indexOfFirstItem + index + 1}
+                            </th>
+                            <td className='px-6 py-6 font-medium text-gray-900'>
+                              {student.codigo}
+                            </td>
+                            <td className='px-6 py-6'>
+                              {student.nombre}
+                            </td>
+                            <td className='px-6 py-6'>
+                              {student.correo}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    <div className='my-2 flex justify-center'>
+                      <nav className='block'>
+                        <ul className='flex list-none flex-row space-x-5 items-center'>
+                          <li>
+                            <button className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage === 1 ? 'bg-[#A1AFBA] text-white' : ''}`} onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+                              Anterior
                             </button>
                           </li>
-                        ))}
-                        <li>
-                          <button
-                            className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage === totalPages ? 'bg-[#A1AFBA] text-white' : ''}`}
-                            onClick={() => paginate(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                          >
-                            Siguiente
-                          </button>
-                        </li>
-                      </ul>
-                    </nav>
+                          {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                            <li key={number}>
+                              <button className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage === number ? 'bg-[#A1AFBA] text-white' : ''}`} onClick={() => paginate(number)}>
+                                {number}
+                              </button>
+                            </li>
+                          ))}
+                          <li>
+                            <button className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage === totalPages ? 'bg-[#A1AFBA] text-white' : ''}`} onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages}>
+                              Siguiente
+                            </button>
+                          </li>
+                        </ul>
+                      </nav>
+                    </div>
                   </div>
                 </div>
+                <div className='w-[55%] flex flex-col items-center'>
+                  <button onClick={() => { showContent('gestionarContenido') }} className='w-[50%] flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#6A8595] hover:bg-[#2B4C5D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#273F4B]'>Añadir Tema</button>
+                  {showFormContent && showContentPage === 'gestionarContenido' && (
+                    <div className='bg-white text-gray-200 shadow-2xl flex flex-col mt-6 py-8 px-8 rounded-lg w-[60%]'>
+                      {/* {showSuccessMessage && (
+                        <div className='fixed z-10 inset-0 overflow-auto' aria-labelledby='modal-title' role='dialog' aria-modal='true'>
+                          <div className='flex items-end justify-center min-h-auto pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
+                            <div className='fixed inset-0 bg-gray-900 bg-opacity-80 transition-opacity' aria-hidden='true'>
+                              <span className='hidden sm:inline-block sm:align-middle sm:h-screen' aria-hidden='true'>&#8203;</span>
+                              <div className='inline-block align-bottom bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full'>
+                                <div className='bg-white sm:p-4 sm:pb-4'>
+                                  <div className='sm:mt-0 sm:ml-0 sm:text-center'>
+                                    <h3 className='text-lg leading-6 font-medium text-gray-900' id='modal-title'>
+                                      Curso {courseData.nombre} actualizado de forma satisfactoria.
+                                    </h3>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )} */}
+                      <h1 className='font-bold text-xl coinstracking-widest text-neutral-700 text-center'>Gestión de contenido</h1>
+                      <form onSubmit={onContent}>
+                        <div className='mb-2'>
+                          <label htmlFor='name' className='block text-sm font-medium text-gray-700 mb-2'>Nombre del tema</label>
+                          <input type='text' {...register('nombre', { required: true })} id='name' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2' placeholder='Ingrese el nombre del tema que va a subir' />
+                          { /* errors.name && (<p className='text-rose-400'>Por favor, completa este campo</p>) */}
+                        </div>
+                        <div className='mb-2'>
+                          <label htmlFor='descripcion' className='block text-sm font-medium text-gray-700 mb-2'>Descripción</label>
+                          <textarea rows='3' {...register('descripcion', { required: true })} id='descripcion' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2' placeholder='Ingrese la descripción del tema que va a subir' />
+                          {/* {errors.descripcion && (<p className='text-rose-400'>Por favor, completa este campo.</p>)} */}
+                        </div>
+                        <div className='mb-8'>
+                          <label htmlFor='pdf' className='block text-sm font-medium text-gray-700 mb-2'>
+                            {selectedFile ? (
+                              <span>Archivo seleccionado: {selectedFile.name}</span>
+                            ) : (
+                              <span>Cargar contenido PDF</span>
+                            )}
+                          </label>
+                          <div className="mt-1 relative">
+                            <input
+                            {...register('pdf', { required: true })}
+                              id="upload-pdf"
+                              type="file"
+                              accept=".pdf"
+                              onChange={handleFileChange}
+                              className="sr-only"
+                            />
+                            <label
+                              htmlFor="upload-pdf"
+                              className="cursor-pointer bg-white rounded-md font-medium text-blue-800/80 hover:text-purple-800/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            >
+                              {selectedFile ? 'Cambiar archivo PDF' : 'Subir archivo PDF'}
+                            </label>
+                          </div>
+                          {/* {errors.pdf && (<p className='text-rose-400'>Por favor, completa este campo.</p>)} */}
+                        </div>
+                        <button type='submit' className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#6A8595] hover:bg-[#2B4C5D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#273F4B]'>Subir contenido</button>
+                      </form>
+                      {/* {
+                        coursesErrors.map((error, i) => (
+                          <div className='bg-indigo-100 p-2 text-stone-900 mt-4 rounded-lg text-justify' key={i}>
+                            {error}
+                          </div>
+                        ))
+                      } */}
+                    </div>
+                  )}
                 </div>
-                <div className='w-[60%]'>
-                  Aquí se gestiona el contenido del curso
-                </div>
-                </div>
-              )}
-          </div>
+              </div>
+            )}
         </div>
       )}
     </div>

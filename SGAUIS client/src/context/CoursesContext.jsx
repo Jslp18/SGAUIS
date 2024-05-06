@@ -146,7 +146,7 @@ export function CoursesProvider ({ children }) {
     if (showSuccessMessage) {
       const timer2 = setTimeout(() => {
         setShowSuccessMessage(false)
-      }, 4000)
+      }, 3000)
       return () => clearTimeout(timer2)
     }
   }, [showSuccessMessage])

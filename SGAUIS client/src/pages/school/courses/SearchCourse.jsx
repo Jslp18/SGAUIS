@@ -143,7 +143,7 @@ function SearchCourse() {
               coursesSearch.length !== 0 && (
                 <div className='relative overflow-x-auto shadow-gray-500 shadow-2xl rounded-md mt-5 w-full'>
                   <table className='w-full text-sm text-left rtl:text-right text-neutral-800'>
-                    <thead className='text-xs text-gray-800 uppercase bg-gray-100'>
+                    <thead className='text-xs text-gray-800 uppercase bg-sky-950/25'>
                       <tr>
                         <th scope='col' className='px-6 py-3'>
                           Nombre del curso
@@ -226,7 +226,7 @@ function SearchCourse() {
         </div>
       )}
       {showCoursePage === 'editarCurso' && (
-        <div className='bg-white text-gray-200 shadow-md rounded-lg px-8 mt-10 py-4 w-[35%]'>
+        <div className='bg-white text-gray-200 shadow-2xl rounded-lg px-8 mt-10 py-4 w-[35%]'>
           {showSuccessMessage && (
             <div className='fixed z-10 inset-0 overflow-auto' aria-labelledby='modal-title' role='dialog' aria-modal='true'>
               <div className='flex items-end justify-center min-h-auto pt-4 px-4 pb-20 text-center sm:block sm:p-0'>

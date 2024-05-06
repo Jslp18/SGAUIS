@@ -17,6 +17,7 @@ export const useProfessor = () => {
 export function ProfessorProvider({ children }) {
 
   const [search, setSearch] = useState(false)
+  const [searchStudents, setSearchStudents] = useState(false)
 
   // Mostrar los cursos correspondientes al profesor
   const [professorCourses, setProfessorCourses] = useState([])
@@ -26,6 +27,9 @@ export function ProfessorProvider({ children }) {
 
   // Mostrar el curso actual elegido
   const [currentCourse, setCurrentCourse] = useState(null)
+
+  // Manejo de la subida de archivo
+  const [selectedFile, setSelectedFile] = useState(null)
 
   const viewProfessorCourses = async () => {
     try {
@@ -46,7 +50,7 @@ export function ProfessorProvider({ children }) {
   const getStudentsCourse = async (currentId) => {
     try {
       const response = await verEstudiantesCurso(currentId)
-      setStudentsCourse(response.data)
+      return response.data
     } catch (error) {
       console.error(error)
     }
@@ -58,10 +62,14 @@ export function ProfessorProvider({ children }) {
       getStudentsCourse,
       setStudentsCourse,
       setCurrentCourse,
+      setSearchStudents,
+      setSelectedFile,
       professorCourses,
       studentsCourse,
       currentCourse,
-      search
+      search,
+      searchStudents,
+      selectedFile
     }}
     >
       {children}
