@@ -1,9 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useCourses } from '../../../context/CoursesContext'
 
 function ViewCourses() {
   const { courses, search } = useCourses()
-  console.log(courses)
   
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 3 // Puedes ajustar esto según tu preferencia
@@ -27,6 +26,11 @@ function ViewCourses() {
     for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(i)
     }
+
+    const { viewCourses } = useCourses()
+    useEffect(() => {
+      viewCourses()
+    }, [])
 
     return pageNumbers
   }

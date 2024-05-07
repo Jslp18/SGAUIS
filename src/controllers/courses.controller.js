@@ -59,8 +59,11 @@ export const updateCourseById = async (req, res) => {
 
 export const deleteCourseById = async (req, res) => {
   const { courseId } = req.params // Desde req.params se obtiene el courseId (Id del curso)
+  console.log(inscribeUserCourses)
+  const inscribeUsersCourses = await InscribeUsersCourses.find({ courses: courseId })
+  await Promise.all(inscribeUsersCourses.map(id => InscribeUsersCourses.findByIdAndDelete(id)))
   await Courses.findByIdAndDelete(courseId) // Se elimina el curso por medio del courseId
-  res.sendStatus(204) // No se retornada nada como respuesta de la eliminación exitosa
+  res.sendStatus(204) // No se retornada nada como respuesta de la eliminación exitosa */
 }
 
 export const inscribeUserCourses = async (req, res) => {
@@ -82,7 +85,7 @@ export const undoInscribeUserCourses = async (req, res) => {
   const userFound = await Users.findOne({codigo})
   const courseFound = await Courses.findById(courseId)
   const rol = await Roles.findById(userFound.rol)
-  const inscribeUsersCourses = await InscribeUsersCourses.findOneAndDelete({ users: userFound._id, courses: courseId})
+  const inscribeUsersCourses = await InscribeUsersCourses.findOneAndDelete({ users: userFound._id, courses: courseId })
   if(!inscribeUsersCourses) { return res.status(404).json({ message: `Lo siento, pero el usuario con código ${codigo} no se encuentra matriculado  en el curso ${courseFound.nombre}` })}
   res.status(201).json({
     nombre: userFound.nombre,

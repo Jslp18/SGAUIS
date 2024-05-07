@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useProfessor } from '../../context/ProfessorContext'
 import { useForm } from 'react-hook-form'
 import SGAUIS6 from '../../resources/SGA UIS 6.png'
@@ -8,7 +8,7 @@ function CoursesProfessor() {
   const { register, handleSubmit, formState: { errors } } = useForm()
 
   const { professorCourses, getStudentsCourse, studentsCourse, setStudentsCourse, search, searchStudents, 
-    setSearchStudents, selectedFile, setSelectedFile, contentUpload, errors: contentErros, showSuccessMessage } = useProfessor()
+    setSearchStudents, selectedFile, setSelectedFile, contentUpload, errors: contentErros, showSuccessMessage, viewProfessorCourses } = useProfessor()
 
   const [currentCourse, setCurrentCourse] = useState(null)
   const [currentId, setCurrentId] = useState('')
@@ -67,6 +67,10 @@ function CoursesProfessor() {
     const file = event.target.files[0]
     setSelectedFile(file)
   }
+
+  useEffect(() => {
+    viewProfessorCourses()
+  }, [])
 
   return (
     <div className='flex flex-col w-full ml-3 my-6 mr-6'>
@@ -206,7 +210,7 @@ function CoursesProfessor() {
                     </nav>
                   </div>
                 </div>
-                <div className='w-[55%] flex flex-col items-center'>
+                <div className='w-[55%] flex flex-col items-center mt-8'>
                   <button onClick={() => { showContent('gestionarContenido') }} className='w-[50%] flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#6A8595] hover:bg-[#2B4C5D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#273F4B]'>Añadir Tema</button>
                   {showFormContent && showContentPage === 'gestionarContenido' && (
                     <div className='bg-white text-gray-200 shadow-2xl flex flex-col mt-6 py-8 px-8 rounded-lg w-[60%]'>

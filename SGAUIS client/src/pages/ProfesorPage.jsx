@@ -1,17 +1,16 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useProfessor } from '../context/ProfessorContext'
-
 import CursosProfesor from './professor/CoursesProfessor'
 import InfoProfesor from './professor/InfoProfessor'
-import SGAUIS5 from '../resources/SGA UIS 5.png'
+import Professor from './professor/Professor'
 
 function ProfessorPage() {
 
   const { user } = useAuth()
   const [showRegisterPage, setShowRegisterPage] = useState('home')
 
-  const { viewProfessorCourses, setSearchStudents, setStudentsCourse, setSelectedFile } = useProfessor()
+  const { setSearchStudents, setStudentsCourse, setSelectedFile } = useProfessor()
 
   const showRegister = (pagina) => {
     setShowRegisterPage(pagina)
@@ -19,10 +18,6 @@ function ProfessorPage() {
     setStudentsCourse([])
     setSelectedFile(null)
   }
-
-  useEffect(() => {
-    viewProfessorCourses()
-  }, [])
 
   return (
     <div className='text-gray-900 bg-slate-100 body-font shadow w-full overflow-y-auto'>
@@ -39,18 +34,12 @@ function ProfessorPage() {
           </div>
         </div>
         <div className='bg-slate-100 w-5/6 h-[calc(100vh-9vh)] flex justify-center'>
-          {showRegisterPage === 'home' && <Profesor />}
+          {showRegisterPage === 'home' && <Professor />}
           {showRegisterPage === 'cursos' && <CursosProfesor />}
           {showRegisterPage === 'info' && <InfoProfesor />}
         </div>
       </div>
     </div>
-  )
-}
-
-function Profesor() {
-  return (
-    <img className='place-self-center opacity-85 w-2/5' src={SGAUIS5} alt='SGA UIS: Sistema de Gestión de Aprendizaje Universidad Industrial de Santander.' />
   )
 }
 
