@@ -4,7 +4,8 @@ dotenv.config()
 const config = {
   appConfig: {
     port: process.env.APP_PORT,
-    secret: process.env.SECRET
+    secret: process.env.SECRET,
+    host: process.env.APP_HOST
   },
   dbConfig: {
     username: process.env.DB_USERNAME,

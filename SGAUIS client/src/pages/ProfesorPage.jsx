@@ -10,13 +10,15 @@ function ProfessorPage() {
   const { user } = useAuth()
   const [showRegisterPage, setShowRegisterPage] = useState('home')
 
-  const { setSearchStudents, setStudentsCourse, setSelectedFile } = useProfessor()
+  const { setSearchStudents, setStudentsCourse, setSelectedFile, setSearchContent, setContentCourse } = useProfessor()
 
   const showRegister = (pagina) => {
     setShowRegisterPage(pagina)
     setSearchStudents(false)
     setStudentsCourse([])
     setSelectedFile(null)
+    setSearchContent(false)
+    setContentCourse([])
   }
 
   return (

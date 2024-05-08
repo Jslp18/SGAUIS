@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { verCursosProfesor, verEstudiantesCurso, subirContenido } from '../api/professor'
+import { verCursosProfesor, verEstudiantesCurso, subirContenido, verContenidoCurso } from '../api/professor'
 import Cookies from 'js-cookie'
 
 const ProfessorContext = createContext()
@@ -18,6 +18,7 @@ export function ProfessorProvider({ children }) {
 
   const [search, setSearch] = useState(false)
   const [searchStudents, setSearchStudents] = useState(false)
+  const [searchContent, setSearchContent] = useState(false)
 
   // Mostrar los cursos correspondientes al profesor
   const [professorCourses, setProfessorCourses] = useState([])
@@ -35,6 +36,9 @@ export function ProfessorProvider({ children }) {
   const [contentData, setContentData] = useState([])
   const [errors, setErrors] = useState([])
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+
+  // Mostrar el contenido del curso
+  const [contentCourse, setContentCourse] = useState([])
 
   const viewProfessorCourses = async () => {
     try {
@@ -55,6 +59,16 @@ export function ProfessorProvider({ children }) {
   const getStudentsCourse = async (currentId) => {
     try {
       const response = await verEstudiantesCurso(currentId)
+      return response.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const getContentCourse = async (currentId) => {
+    console.log(currentId)
+    try {
+      const response = await verContenidoCurso(currentId)
       return response.data
     } catch (error) {
       console.error(error)
@@ -110,6 +124,9 @@ export function ProfessorProvider({ children }) {
       setSearchStudents,
       setSelectedFile,
       contentUpload,
+      getContentCourse,
+      setContentCourse,
+      setSearchContent,
       professorCourses,
       studentsCourse,
       currentCourse,
@@ -118,7 +135,9 @@ export function ProfessorProvider({ children }) {
       selectedFile,
       contentData,
       errors,
-      showSuccessMessage
+      showSuccessMessage,
+      contentCourse,
+      searchContent
     }}
     >
       {children}

@@ -19,6 +19,7 @@ app.use(cors({
   origin: 'http://localhost:5173',
   credentials: true
 }))
+app.use('/public', express.static(`${__dirname}/libs/pdf`))
 app.set('pkg', pkg)
 
 app.get('/', (req, res) => {

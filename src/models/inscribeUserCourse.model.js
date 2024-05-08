@@ -1,12 +1,12 @@
 import { Schema, model } from "mongoose"
 
 const inscribeUserCourseSchema = new Schema({
-    users: {
+    usuarios: {
         ref: 'Users',
         require: true,
         type: Schema.Types.ObjectId
     },
-    courses: {
+    curso: {
         ref: 'Courses',
         require: true,
         type: Schema.Types.ObjectId
