@@ -66,7 +66,6 @@ export function ProfessorProvider({ children }) {
   }
 
   const getContentCourse = async (currentId) => {
-    console.log(currentId)
     try {
       const response = await verContenidoCurso(currentId)
       return response.data
