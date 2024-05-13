@@ -11,6 +11,7 @@ const contentSchema = new Schema({
     },
     pdfFile: {
         ref: 'PdfFile',
+        require: true,
         type: Schema.Types.ObjectId
     },
     curso: {

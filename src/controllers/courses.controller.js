@@ -59,7 +59,6 @@ export const updateCourseById = async (req, res) => {
 
 export const deleteCourseById = async (req, res) => {
   const { courseId } = req.params // Desde req.params se obtiene el courseId (Id del curso)
-  console.log(inscribeUserCourses)
   const inscribeUsersCourses = await InscribeUsersCourses.find({ curso: courseId })
   await Promise.all(inscribeUsersCourses.map(id => InscribeUsersCourses.findByIdAndDelete(id)))
   await Courses.findByIdAndDelete(courseId) // Se elimina el curso por medio del courseId

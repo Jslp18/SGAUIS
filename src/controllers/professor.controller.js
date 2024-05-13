@@ -3,6 +3,7 @@ import Users from '../models/users.model'
 import InscribeUsersCourses from '../models/inscribeUserCourse.model.js'
 import PdfFile from '../models/PDFfile.model.js'
 import Content from '../models/content.model.js'
+import Homework from '../models/homework.model.js'
 import jwt from 'jsonwebtoken'
 import { appConfig } from '../config.js'
 
@@ -31,24 +32,71 @@ export const getStudentsCourses = async (req, res) => {
 }
 
 export const uploadContent = async (req, res) => {
-    if (!req.file) {
-        return res.status(400).send('Error: No se recibió ningún archivo en la solicitud.');
-    }
     const { originalname, filename } = req.file
     const { courseId } = req.params // Desde req.params se obtiene el courseId (Id del curso)  
     const { nombre, descripcion } = req.body // Desde el req.boy se obtiene el nombre y la descripción del tema
-    const newPDF = PdfFile({ nombre: originalname }) // Para crearlo se crea un curso con estos parámetros
+    const newPDF = PdfFile({ nombre: originalname }) // Para crearlo se crea un pdf con estos parámetros
     newPDF.setPdfURL(filename)
     const savedPdfFile = await newPDF.save()
     const newContent = new Content({ nombre, descripcion, pdfFile: savedPdfFile._id, curso: courseId })
     const savedContent = await newContent.save()
     res.status(201).json({
-        nombre: savedContent.nombre,
+        nombre: savedContent.nombre
     })
 }
 
 export const getContentCourses = async (req, res) => {
     const { courseId } = req.params
-    const content = await Content.find({curso: courseId}).populate('pdfFile')
+    const content = await Content.find({ curso: courseId }).populate('pdfFile')
     res.status(200).json(content)
 }
+
+export const uploadHomework = async (req, res) => {
+    const { originalname, filename } = req.file
+    const { homeworkId } = req.params // Desde req.params se obtiene el courseId (Id del curso)  
+    const data = JSON.parse(req.body.data)
+    const { nombre, descripcion, calificacionMaxima, fecha } = data
+    const newPDF = PdfFile({ nombre: originalname }) // Para crearlo se crea un pdf con estos parámetros
+    newPDF.setPdfURL(filename)
+    const savedPdfFile = await newPDF.save()
+    const newTarea = new Homework({ nombre, descripcion, calificacionMaxima, fechaEntrega: fecha, pdfFile: savedPdfFile._id, curso: homeworkId })
+    const savedTarea = await newTarea.save()
+    res.status(201).json({
+        nombre: savedTarea.nombre
+    })
+}
+
+export const getHomeworkCourses = async (req, res) => {
+    try {
+        const { homeworkId } = req.params
+        const content = await Homework.find({ curso: homeworkId }).populate('pdfFile');
+        // Mapear los resultados para formatear las fechas
+        const formattedContent = content.map(homework => ({
+            ...homework.toObject(),
+            fechaEntrega: formatDate(homework.fechaEntrega) // Formatear la fecha
+        }));
+        res.status(200).json(formattedContent);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Ha ocurrido un error al obtener las tareas.' });
+    }
+}
+
+export const deleteHomework = async (req, res) => {
+    const { homeworkId } = req.params // Desde req.params se obtiene el courseId (Id de la tarea)
+    await Homework.findByIdAndDelete(homeworkId) // Se elimina el curso por medio del courseId
+    res.sendStatus(204) // No se retornada nada como respuesta de la eliminación exitosa */
+  }
+
+function formatDate(date) {
+    // Formato personalizado para Colombia
+    return new Date(date).toLocaleString('es-CO', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true // Utilizar formato de 12 horas
+    });
+}
+

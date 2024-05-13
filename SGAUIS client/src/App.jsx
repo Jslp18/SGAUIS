@@ -15,7 +15,7 @@ function App() {
     <AuthProvider>
       <CoursesProvider>
         <ProfessorProvider>
-        <Content />
+          <Content />
         </ProfessorProvider>
       </CoursesProvider>
     </AuthProvider>
@@ -63,7 +63,7 @@ function Content() {
 function Nav() {
   const { logout } = useAuth()
   return (
-    <header className='text-gray-900 bg-stone-200 body-font shadow w-full h-[9vh] '>
+    <header className='text-gray-900 bg-stone-200 body-font shadow w-full h-[9vh]'>
       <div className='flex flex-wrap p-5 flex-row'>
         <div className='w-1/5 flex flex-row items-center space-x-8'>
           <svg xmlns='http://www.w3.org/2000/svg' fill='#918F8F' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='w-10 h-10 text-[#231F20] ml-4'><path strokeLinecap='round' strokeLinejoin='round' d='M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25' /></svg><h1 className='font-semibold text-4xl tracking-widest text-[#231F20]'>SGA UIS</h1>

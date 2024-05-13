@@ -8,17 +8,24 @@ function CoursesProfessor() {
   const { register, handleSubmit, formState: { errors }, reset, watch } = useForm()
 
   const { professorCourses, getStudentsCourse, studentsCourse, setStudentsCourse, search, searchStudents, setSearchStudents, selectedFile,
-    setSelectedFile, contentUpload, errors: contentErrors, showSuccessMessage, viewProfessorCourses, contentData, getContentCourse,
-    contentCourse, setContentCourse, searchContent, setSearchContent } = useProfessor()
+    setSelectedFile, contentUpload, errors: contentErrors, homeworkUpload, homeworkData, errors: homeworkErrors, showSuccessMessage,
+    viewProfessorCourses, contentData, getContentCourse, contentCourse, setContentCourse, searchContent, setSearchContent,
+    getHomeworkCourse, homeworkCourse, setHomeworkCourse, searchHomework, setSearchHomework, deleteHomework } = useProfessor()
 
   const [currentCourse, setCurrentCourse] = useState(null)
   const [currentId, setCurrentId] = useState('')
+
   const itemsPerPage = 7
-  const itemsPerPage2 = 1
   const [currentPage, setCurrentPage] = useState(1)
-  const [currentPage2, setCurrentPage2] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+
+  const itemsPerPage2 = 1
+  const [currentPage2, setCurrentPage2] = useState(1)
   const [totalPages2, setTotalPages2] = useState(1)
+
+  const itemsPerPage3 = 5
+  const [currentPage3, setCurrentPage3] = useState(1)
+  const [totalPages3, setTotalPages3] = useState(1)
 
   const [showProfessorPage, setProfessorPage] = useState('profesorCurso')
   const [showContentUpload, setShowContentUpload] = useState('')
@@ -27,15 +34,22 @@ function CoursesProfessor() {
   const [showDisplayContent, setshowDisplayContent] = useState(false)
   const [showUploadContent, setShowUploadContent] = useState(false)
 
+  // Mostrar los estudiantes matriculados en el curso
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
   const currentStudents = studentsCourse.slice(indexOfFirstItem, indexOfLastItem)
 
+  // Mostrar el contenido que ha sido subido al curso
   const indexOfLastItem2 = currentPage2 * itemsPerPage2
   const indexOfFirstItem2 = indexOfLastItem2 - itemsPerPage2
   const currentContent = contentCourse.slice(indexOfFirstItem2, indexOfLastItem2)
 
-  const maxCharacters = 200;
+  // Mostrar las tareas que han sido subidas al curso
+  const indexOfLastItem3 = currentPage3 * itemsPerPage3
+  const indexOfFirstItem3 = indexOfLastItem3 - itemsPerPage3
+  const currentHomework = homeworkCourse.slice(indexOfFirstItem3, indexOfLastItem3)
+
+  const maxCharacters = 200
 
   // Obtener el valor actual de 'descripcion'
   let descripcion = watch('descripcion') || ''
@@ -73,6 +87,7 @@ function CoursesProfessor() {
     const idCurso = course._id
     setCurrentId(idCurso)
     const res = await getStudentsCourse(idCurso)
+    console.log(res)
     setStudentsCourse(res)
     setTotalPages(Math.ceil(res.length / itemsPerPage))
     setCurrentPage(1)
@@ -80,8 +95,8 @@ function CoursesProfessor() {
   }
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber)
-
   const paginate2 = (pageNumber) => setCurrentPage2(pageNumber)
+  const paginate3 = (pageNumber) => setCurrentPage3(pageNumber)
 
   const volver = () => {
     showCourse('profesorCurso')
@@ -96,6 +111,12 @@ function CoursesProfessor() {
   }
 
   // Subir contenido
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0]
+    setSelectedFile(file)
+  }
+
   const onContent = handleSubmit(async (values) => {
     const formData = new FormData() // Crea un objeto FormData para enviar el formulario
     formData.append('nombre', values.nombre) // Agrega los valores del formulario al objeto FormData
@@ -103,11 +124,6 @@ function CoursesProfessor() {
     formData.append('pdf', selectedFile) // Agrega el archivo seleccionado al objeto FormData
     await contentUpload(currentId, formData) // Envía el formData al backend
   })
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0]
-    setSelectedFile(file)
-  }
 
   useEffect(() => {
     viewProfessorCourses()
@@ -141,22 +157,47 @@ function CoursesProfessor() {
   }
 
   // Subir tareas
-
   const subirTareas = async (course) => {
     setCurrentCourse(course)
     showCourse('subirTareas')
     const idCurso = course._id
     setCurrentId(idCurso)
+    const res = await getHomeworkCourse(idCurso)
+    setHomeworkCourse(res)
+    setTotalPages3(Math.ceil(res.length / itemsPerPage3))
+    setCurrentPage3(1)
+    setSearchHomework(true)
   }
 
   const onHomework = handleSubmit(async (values) => {
-    const formData = new FormData() // Crea un objeto FormData para enviar el formulario
-    formData.append('nombre', values.nombre) // Agrega los valores del formulario al objeto FormData
-    formData.append('descripcion', values.descripcion)
-    formData.append('pdf', selectedFile) // Agrega el archivo seleccionado al objeto FormData
-    console.log(formData)
-    // await contentUpload(currentId, formData) // Envía el formData al backend
+    const formData = new FormData()
+    formData.append('pdf', selectedFile)
+
+    // Añadir datos JSON al formData
+    formData.append('data', JSON.stringify({
+      nombre: values.nombre,
+      descripcion: values.descripcion,
+      calificacionMaxima: values.calificacionMaxima,
+      fecha: values.fecha
+    }))
+    await homeworkUpload(currentId, formData)
+
+    // Se actualice al ejecutar una subida de tareas
+    const res = await getHomeworkCourse(currentId)
+    console.log(res)
+    setHomeworkCourse(res)
+    setTotalPages3(Math.ceil(res.length / itemsPerPage3))
+    setCurrentPage3(1)
+    setSearchHomework(true)
   })
+
+  // Eliminar tarea
+  const eliminarTarea = async (idTarea) => {
+    const res = await deleteHomework(idTarea)
+    if (res.status === 204) {
+      setHomeworkCourse(homeworkCourse.filter(homework => homework._id !== idTarea))
+    }
+  }
 
   return (
     <div className='flex flex-col w-full m-6'>
@@ -214,9 +255,11 @@ function CoursesProfessor() {
         </div>
       )}
       {showProfessorPage === 'subirTareas' && (
-        <div>
-          <div className='flex flex-col items-center justify-center'>
-            <div className='bg-white text-gray-200 shadow-2xl flex flex-col py-8 px-8 rounded-lg w-[60%]'>
+        <div className='flex flex-col items-center h-screen'>
+          <h1 className='pb-10 justify-self-start font-bold text-4xl coinstracking-widest text-neutral-600 text-center'>Curso {currentCourse.nombre}</h1>
+          <div className='flex flex-row w-full'>
+            <div className='flex flex-col w-[30%] bg-white text-gray-200 shadow-2xl py-8 px-8 rounded-lg'>
+              <span><button className='flex flex-row select-none items-center gap-3 rounded-lg py-2 px-4 text-center align-middle font-sans text-md font-extrabold text-gray-800 transition-all hover:bg-gray-500/10 active:bg-gray-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' onClick={() => { volver() }}><svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'><path strokeLinecap='round' strokeLinejoin='round' d='M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18' /></svg>Volver</button></span>
               {showSuccessMessage && (
                 <div className='fixed z-10 inset-0 overflow-auto' aria-labelledby='modal-title' role='dialog' aria-modal='true'>
                   <div className='flex items-end justify-center min-h-auto pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
@@ -226,7 +269,7 @@ function CoursesProfessor() {
                         <div className='bg-white sm:p-4 sm:pb-4'>
                           <div className='sm:mt-0 sm:ml-0 sm:text-center'>
                             <h3 className='text-lg leading-6 font-medium text-gray-900' id='modal-title'>
-                              Tema {contentData.nombre} ha sido añadido al curso {currentCourse.nombre} de manera satisfactoria.
+                              Tarea {homeworkData.nombre} ha sido añadido al curso {currentCourse.nombre} de manera satisfactoria.
                             </h3>
                           </div>
                         </div>
@@ -235,18 +278,28 @@ function CoursesProfessor() {
                   </div>
                 </div>
               )}
-              <h1 className='font-bold text-xl coinstracking-widest text-neutral-700 text-center'>Agregar tareas</h1>
+              <h1 className='font-bold text-xl coinstracking-widest text-neutral-700 text-center'>Agregar tarea</h1>
               <form onSubmit={onHomework} encType='multipart/form-data'>
-                <div className='mb-2'>
+                <div className='mb-2 relative'>
                   <label htmlFor='nombre' className='block text-sm font-medium text-gray-700 mb-2'>Nombre de la tarea</label>
-                  <input type='text' {...register('nombre', { required: true })} id='name' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2' placeholder='Ingrese el nombre de la tarea que va a subir' />
+                  <input type='text' {...register('nombre', { required: true })} id='nombre' className='shadow-sm rounded-md w-full px-3 py-3 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2' placeholder='Ingrese el nombre de la tarea' />
                   {errors.nombre && (<p className='text-rose-400'>Por favor, completa este campo</p>)}
                 </div>
                 <div className='mb-2 relative'>
+                  <label htmlFor='calificacionMaxima' className='block text-sm font-medium text-gray-700 mb-2'>Calificación máxima</label>
+                  <input type="string" {...register('calificacionMaxima', { required: true, valueAsNumber: true })} id='calificacionMaxima' className='shadow-sm rounded-md w-full px-3 py-3 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2' placeholder='Ingrese la calificación máxima de la tarea' />
+                  {errors.calificacionMaxima && (<p className='text-rose-400'>Por favor, completa este campo</p>)}
+                </div>
+                <div className='mb-2 relative'>
                   <label htmlFor='descripcion' className='flex text-sm font-medium text-gray-700 mb-2'>Descripción</label>
-                  <textarea value={descripcion} rows='3' {...register('descripcion', { required: true })} id='descripcion' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2' placeholder='Ingrese la descripción de la tarea que va a subir' />
-                  <span className={`absolute bottom-2 right-2 text-sm ${descripcionLength === maxCharacters ? 'text-red-700/70' : 'text-sky-800'}`}>{descripcionLength}<span className='text-sky-800'>/{maxCharacters}</span></span>
+                  <textarea value={descripcion} rows='3' {...register('descripcion', { required: true })} id='descripcion' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2' placeholder='Ingrese la descripción de la tarea' />
+                  <span className={`absolute bottom-2 right-2 text-sm font-medium ${descripcionLength === maxCharacters ? 'text-red-800/80' : 'text-sky-700/70'}`}>{descripcionLength}<span className='text-sky-700'>/{maxCharacters}</span></span>
                   {errors.descripcion && (<p className='text-rose-400'>Por favor, completa este campo.</p>)}
+                </div>
+                <div className='mb-2'>
+                  <label htmlFor='fecha' className='block text-sm font-medium text-gray-700 mb-2'>Fecha límite de entrega</label>
+                  <input type='datetime-local' {...register('fecha', { required: true, valueAsDate: true })} id='fecha' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2' />
+                  {errors.fecha && (<p className='text-rose-400'>Por favor, completa este campo</p>)}
                 </div>
                 <div className='mb-4'>
                   <label htmlFor='pdf' className='block text-sm font-medium text-gray-700 mb-2'>
@@ -277,31 +330,31 @@ function CoursesProfessor() {
                 <button type='submit' className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#6A8595] hover:bg-[#2B4C5D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#273F4B]'>Subir contenido</button>
               </form>
               {
-                contentErrors.map((error, i) => (
+                homeworkErrors.map((error, i) => (
                   <div className='bg-indigo-100 p-2 text-stone-900 mt-4 rounded-lg text-justify' key={i}>
                     {error}
                   </div>
                 ))
               }
             </div>
-            <div className='flex items-center justify-center w-full mt-14'>
-              {searchContent === false && (
+            <div className='flex items-center justify-center w-[70%] mx-10'>
+              {searchHomework === false && (
                 <div className='flex items-center justify-center w-[80%] bg-slate-100'>
-                  <h1 className='mt-2 px-10 font-bold text-4xl coinstracking-widest text-[#231F20] text-opacity-35 text-center'>Cargando contenido del curso...</h1>
+                  <h1 className='mt-2 px-10 font-bold text-4xl coinstracking-widest text-[#231F20] text-opacity-35 text-center'>Cargando tareas asignadas...</h1>
                 </div>
               )}
               {
-                searchContent && contentCourse.length === 0 && (
+                searchHomework && homeworkCourse.length === 0 && (
                   <div className='relative w-[50%] '>
-                    <h1 className='mt-2 px-10 font-bold text-4xl coinstracking-widest text-[#231F20] text-opacity-35 text-center'>Ups, parece que aún no hay contenido en el curso {currentCourse.nombre}.</h1>
+                    <h1 className='mt-2 px-10 font-bold text-4xl coinstracking-widest text-[#231F20] text-opacity-35 text-center'>Ups, parece que aún no hay tareas asignadas en el curso {currentCourse.nombre}.</h1>
                   </div>
                 )}
               {
-                contentCourse.length !== 0 && (
-                  <div className='w-[50%]'>
-                    <div className='flex flex-col overflow-x-auto shadow-gray-500 shadow-2xl rounded-xl bg-slate-100'>
+                homeworkCourse.length !== 0 && (
+                  <div className='w-full'>
+                    <div className='flex flex-col shadow-gray-500 shadow-2xl rounded-xl bg-slate-100'>
                       <div>
-                        <h1 className='block pl-4 bg-gradient-to-bl from-gray-400 to-slate-950 bg-clip-text font-sans text-2xl font-semibold leading-relaxed text-transparent antialiased text-center'>Contenido del curso</h1>
+                        <h1 className='block pl-4 bg-gradient-to-bl from-gray-400 to-slate-950 bg-clip-text font-sans text-2xl font-semibold leading-relaxed text-transparent antialiased text-center'>Tareas asignadas</h1>
                       </div>
                       <table className='w-full text-sm text-left rtl:text-right text-neutral-800'>
                         <thead className='text-xs text-gray-800 uppercase bg-teal-950/25'>
@@ -312,44 +365,74 @@ function CoursesProfessor() {
                             <th scope='col' className='px-6 py-3'>
                               Descripción
                             </th>
+                            <th scope='col' className='px-2 py-3'>
+                              Calificación Máxima
+                            </th>
+                            <th scope='col' className='px-6 py-3'>
+                              Fecha de entrega
+                            </th>
                             <th scope='col' className='px-6 py-3'>
                               Archivo
+                            </th>
+                            <th scope='col' className='px-6 py-3'>
+                              Acciones
                             </th>
                           </tr>
                         </thead>
                         <tbody>
-                          {currentContent.map((content, index2) => (
-                            <tr key={index2} className='bg-zinc-200 border border-transparent hover:bg-zinc-300'>
+                          {currentHomework.map((homework, index3) => (
+                            <tr key={index3} className='bg-zinc-200 border border-transparent hover:bg-zinc-300'>
                               <th scope='row' className='px-6 py-1 font-medium '>
-                                {content.nombre}
+                                {homework.nombre}
                               </th>
                               <td className='px-6 py-3 text-ellipsis overflow-hidden ...'>
-                                {content.descripcion}
+                                {homework.descripcion}
+                              </td>
+                              <td className='px-2 py-3 text-ellipsis overflow-hidden ...'>
+                                {homework.calificacionMaxima}
+                              </td>
+                              <td className='px-6 py-3 text-ellipsis overflow-hidden ...'>
+                                {homework.fechaEntrega}
+                              </td>
+                              {/* Lógica para manejar el entregado: <td className='px-6 py-3 text-ellipsis overflow-hidden ...'>
+                                {homework.entregado ? <div><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                </svg>
+                                </div> : <div><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                </svg>
+                                </div>}
+                              </td> */}
+                              <td className='px-6 py-3'>
+                                <button className='flex flex-row gap-3 underline-offset-4 items-center justify-center hover:text-blue-500' onClick={() => descargarPDF(homework.pdfFile.pdfURL, homework.pdfFile.nombre)}>Descargar<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg></button>
                               </td>
                               <td className='px-6 py-3'>
-                                <button className='flex flex-row gap-3 underline-offset-4 items-center justify-center hover:text-blue-500' onClick={() => descargarPDF(content.pdfFile.pdfURL, content.pdfFile.nombre)}>Descargar<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg></button>
+                                <div className='flex flex-row items-center justify-center gap-3'>
+                                  <button onClick={() => { editarTarea(homework) }} className='flex flex-row w-full items-center px-4 group cursor-pointer text-md bg-[#92A8C1] hover:bg-blue-300 focus:bg-blue-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns='http://www.w3.org/2000/svg' fill='#FFF' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap='round' strokeLinejoin='round' d='m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125' /></svg><p className='text-black font-normal group-focus:text-black'>Editar tarea</p></button>
+                                  <button onClick={() => { eliminarTarea(homework._id) }} className='flex flex-row w-full items-center px-4 group cursor-pointer text-md bg-[#c19492] hover:bg-red-300 focus:bg-red-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns='http://www.w3.org/2000/svg' fill='#FFF' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap='round' strokeLinejoin='round' d='m3 3 1.664 1.664M21 21l-1.5-1.5m-5.485-1.242L12 17.25 4.5 21V8.742m.164-4.078a2.15 2.15 0 0 1 1.743-1.342 48.507 48.507 0 0 1 11.186 0c1.1.128 1.907 1.077 1.907 2.185V19.5M4.664 4.664 19.5 19.5' /></svg><p className='text-black font-normal group-focus:text-black'>Eliminar tarea</p></button>
+                                </div>
                               </td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
-                      <div className='flex items-center justify-center my-2'>
+                      <div className='flex items-center justify-center my-2 w-full'>
                         <nav className='block'>
                           <ul className='flex list-none flex-row space-x-5 items-center'>
                             <li>
-                              <button className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage2 === 1 ? 'bg-[#A1AFBA] text-white' : ''}`} onClick={() => paginate2(currentPage2 - 1)} disabled={currentPage2 === 1}>
+                              <button className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage3 === 1 ? 'bg-[#A1AFBA] text-white' : ''}`} onClick={() => paginate3(currentPage3 - 1)} disabled={currentPage3 === 1}>
                                 Anterior
                               </button>
                             </li>
-                            {Array.from({ length: totalPages2 }, (_, i) => i + 1).map((number2) => (
-                              <li key={number2}>
-                                <button className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage2 === number2 ? 'bg-[#A1AFBA] text-white' : ''}`} onClick={() => paginate2(number2)}>
-                                  {number2}
+                            {Array.from({ length: totalPages3 }, (_, i) => i + 1).map((number3) => (
+                              <li key={number3}>
+                                <button className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage3 === number3 ? 'bg-[#A1AFBA] text-white' : ''}`} onClick={() => paginate3(number3)}>
+                                  {number3}
                                 </button>
                               </li>
                             ))}
                             <li>
-                              <button className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage2 === totalPages2 ? 'bg-[#A1AFBA] text-white' : ''}`} onClick={() => paginate2(currentPage2 + 1)} disabled={currentPage2 === totalPages2}>
+                              <button className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage3 === totalPages3 ? 'bg-[#A1AFBA] text-white' : ''}`} onClick={() => paginate3(currentPage3 + 1)} disabled={currentPage3 === totalPages3}>
                                 Siguiente
                               </button>
                             </li>
@@ -382,7 +465,7 @@ function CoursesProfessor() {
               studentsCourse.length !== 0 && (
                 <div className='flex flex-row w-full'>
                   <div className='w-[50%]'>
-                    <h1 className='my-6 font-bold text-4xl coinstracking-widest text-neutral-600 text-center'>Curso {currentCourse.nombre}.</h1>
+                    <h1 className='my-6 font-bold text-4xl coinstracking-widest text-neutral-600 text-center'>Curso {currentCourse.nombre}</h1>
                     <div className='flex flex-col overflow-x-auto shadow-gray-500 shadow-2xl rounded-xl bg-slate-100'>
                       <div>
                         <span><button className='mt-2 ml-2 flex flex-row select-none items-center gap-3 rounded-lg py-2 px-4 text-center align-middle font-sans text-md font-extrabold text-gray-800 transition-all hover:bg-slate-500/20 active:bg-slate-500/40 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' onClick={() => { volver() }}><svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'><path strokeLinecap='round' strokeLinejoin='round' d='M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18' /></svg>Volver</button></span>
@@ -481,7 +564,7 @@ function CoursesProfessor() {
                           <div className='mb-2 relative'>
                             <label htmlFor='descripcion' className='flex text-sm font-medium text-gray-700 mb-2'>Descripción</label>
                             <textarea value={descripcion} rows='3' {...register('descripcion', { required: true })} id='descripcion' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2' placeholder='Ingrese la descripción de la tarea que va a subir' />
-                            <span className={`absolute bottom-2 right-2 text-sm ${descripcionLength === maxCharacters ? 'text-red-700/70' : 'text-sky-800'}`}>{descripcionLength}<span className='text-sky-800'>/{maxCharacters}</span></span>
+                            <span className={`absolute bottom-2 right-2 text-sm font-medium ${descripcionLength === maxCharacters ? 'text-red-800/80' : 'text-sky-700/70'}`}>{descripcionLength}<span className='text-sky-700'>/{maxCharacters}</span></span>
                             {errors.descripcion && (<p className='text-rose-400'>Por favor, completa este campo.</p>)}
                           </div>
                           <div className='mb-6'>
@@ -537,7 +620,7 @@ function CoursesProfessor() {
                         {
                           contentCourse.length !== 0 && (
                             <div className='w-[70%]'>
-                              <div className='flex flex-col overflow-x-auto shadow-gray-500 shadow-2xl rounded-xl bg-slate-100'>
+                              <div className='flex flex-col shadow-gray-500 shadow-2xl rounded-xl bg-slate-100'>
                                 <div>
                                   <h1 className='block pl-4 bg-gradient-to-bl from-gray-400 to-slate-950 bg-clip-text font-sans text-2xl font-semibold leading-relaxed text-transparent antialiased text-center'>Contenido del curso</h1>
                                 </div>
@@ -558,7 +641,7 @@ function CoursesProfessor() {
                                   <tbody>
                                     {currentContent.map((content, index2) => (
                                       <tr key={index2} className='bg-zinc-200 border border-transparent hover:bg-zinc-300'>
-                                        <th scope='row' className='px-6 py-1 font-medium '>
+                                        <th scope='row' className='px-6 py-3 font-medium '>
                                           {content.nombre}
                                         </th>
                                         <td className='px-6 py-3 text-ellipsis overflow-hidden ...'>
@@ -571,7 +654,7 @@ function CoursesProfessor() {
                                     ))}
                                   </tbody>
                                 </table>
-                                <div className='flex items-center justify-center my-2'>
+                                <div className='flex items-center justify-center w-full my-2 overflow-x-auto'>
                                   <nav className='block'>
                                     <ul className='flex list-none flex-row space-x-5 items-center'>
                                       <li>

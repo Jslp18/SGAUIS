@@ -41,6 +41,12 @@ export function CoursesProvider({ children }) {
 
   const viewCourses = async () => {
     try {
+      const cookies = Cookies.get()
+      const config = {
+        headers: {
+          Authorization: `Bearer ${cookies.token}`
+        }
+      }
       const response = await verCursos(config)
       setCourses(response.data)
       setSearch(true)

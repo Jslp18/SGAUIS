@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useProfessor } from '../context/ProfessorContext'
+import { useForm } from 'react-hook-form'
 import CursosProfesor from './professor/CoursesProfessor'
 import InfoProfesor from './professor/InfoProfessor'
 import Professor from './professor/Professor'
@@ -8,17 +9,19 @@ import Professor from './professor/Professor'
 function ProfessorPage() {
 
   const { user } = useAuth()
+  const { reset } = useForm()
   const [showRegisterPage, setShowRegisterPage] = useState('home')
 
   const { setSearchStudents, setStudentsCourse, setSelectedFile, setSearchContent, setContentCourse } = useProfessor()
 
   const showRegister = (pagina) => {
     setShowRegisterPage(pagina)
-    setSearchStudents(false)
     setStudentsCourse([])
-    setSelectedFile(null)
-    setSearchContent(false)
+    setSearchStudents(false)
     setContentCourse([])
+    setSearchContent(false)
+    setSelectedFile(null)
+    reset()
   }
 
   return (
