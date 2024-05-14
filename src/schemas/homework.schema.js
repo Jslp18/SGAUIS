@@ -19,11 +19,12 @@ export const homeworkSchema = z.object({
   calificacionMaxima: z.number({
     required_error: 'La calificación máxima es requerida.',
     invalid_type_error: 'La calificación máxima debe ser un número de precisión doble.'
-  }),
+  }).min(0, { message: 'La calificación máxima es de mínimo 0' })
+  .max(5.0, { message: 'La calificación máxima es de máximo 5.0' }),
   descripcion: z.string({
     required_error: 'La descripción es requerida.'
-  }).min(20, { message: 'La descripción debe contener al menos 20 caracteres' }).
-    max(200, { message: 'La descripción tiene una longitud máxima de 200 caracteres.' }),
+  }).min(20, { message: 'La descripción debe contener al menos 20 caracteres' })
+    .max(200, { message: 'La descripción tiene una longitud máxima de 200 caracteres.' }),
   fecha: z.string({
     required_error: 'La fecha es requerida'
   }).refine(value => isTodayOrLater(value), {

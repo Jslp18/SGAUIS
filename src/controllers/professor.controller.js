@@ -7,6 +7,9 @@ import Homework from '../models/homework.model.js'
 import jwt from 'jsonwebtoken'
 import { appConfig } from '../config.js'
 
+import fs from 'fs'
+import path from 'path'
+
 export const getProfessorCourses = async (req, res) => {
     const { token } = req.cookies
     if (!token) return res.status(401).json({ message: 'No autorizado.' })
@@ -83,10 +86,22 @@ export const getHomeworkCourses = async (req, res) => {
 }
 
 export const deleteHomework = async (req, res) => {
-    const { homeworkId } = req.params // Desde req.params se obtiene el courseId (Id de la tarea)
-    await Homework.findByIdAndDelete(homeworkId) // Se elimina el curso por medio del courseId
-    res.sendStatus(204) // No se retornada nada como respuesta de la eliminación exitosa */
-  }
+    try {
+        const { homeworkId } = req.params // Desde req.params se obtiene el courseId (Id de la tarea)
+        const { pdfFile } = await Homework.findById(homeworkId) // Se elimina el curso por medio del courseId
+        const { pdfURL } = await PdfFile.findById(pdfFile)
+        const fileName = pdfURL.split('/').pop()
+        const filePath = path.join(__dirname, `../libs/pdf/${fileName}`);
+        fs.unlinkSync(filePath)
+        await PdfFile.findByIdAndDelete(pdfFile)
+        await Homework.findByIdAndDelete(homeworkId)
+        res.sendStatus(204)
+    }
+    catch (error) {
+        console.error("Error al eliminar la tarea:", error);
+        res.status(500).send("Error al eliminar la tarea");
+    }
+}
 
 function formatDate(date) {
     // Formato personalizado para Colombia

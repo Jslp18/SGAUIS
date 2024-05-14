@@ -107,6 +107,8 @@ function CoursesProfessor() {
     setShowUploadContent(false)
     setshowDisplayContent(false)
     setSelectedFile(null)
+    setHomeworkCourse([])
+    setSearchHomework(false)
     reset()
   }
 
