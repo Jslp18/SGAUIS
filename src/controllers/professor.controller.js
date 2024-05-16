@@ -34,7 +34,7 @@ export const getStudentsCourses = async (req, res) => {
     res.status(200).json(studentsCourse) // Aquí se retornan los estudiantes matriculados al curso
 }
 
-export const uploadContent = async (req, res) => {
+export const createContent = async (req, res) => {
     const { originalname, filename } = req.file
     const { courseId } = req.params // Desde req.params se obtiene el courseId (Id del curso)  
     const { nombre, descripcion } = req.body // Desde el req.boy se obtiene el nombre y la descripción del tema
@@ -54,42 +54,81 @@ export const getContentCourses = async (req, res) => {
     res.status(200).json(content)
 }
 
-export const uploadHomework = async (req, res) => {
+export const createHomework = async (req, res) => {
     const { originalname, filename } = req.file
-    const { homeworkId } = req.params // Desde req.params se obtiene el courseId (Id del curso)  
+    const { courseId } = req.params // Desde req.params se obtiene el courseId (Id del curso) 
+    console.log(courseId)
     const data = JSON.parse(req.body.data)
     const { nombre, descripcion, calificacionMaxima, fecha } = data
+    const fechaEntrega = new Date(fecha).toISOString()
     const newPDF = PdfFile({ nombre: originalname }) // Para crearlo se crea un pdf con estos parámetros
     newPDF.setPdfURL(filename)
     const savedPdfFile = await newPDF.save()
-    const newTarea = new Homework({ nombre, descripcion, calificacionMaxima, fechaEntrega: fecha, pdfFile: savedPdfFile._id, curso: homeworkId })
+    const newTarea = new Homework({ nombre, descripcion, calificacionMaxima, fechaEntrega, pdfFile: savedPdfFile._id, curso: courseId })
     const savedTarea = await newTarea.save()
     res.status(201).json({
         nombre: savedTarea.nombre
     })
 }
 
-export const getHomeworkCourses = async (req, res) => {
+export const getHomeworksCourse = async (req, res) => {
     try {
-        const { homeworkId } = req.params
-        const content = await Homework.find({ curso: homeworkId }).populate('pdfFile');
+        const { courseId } = req.params
+        const homework = await Homework.find({ curso: courseId }).populate('pdfFile')
+        console.log(homework)
         // Mapear los resultados para formatear las fechas
-        const formattedContent = content.map(homework => ({
+        const formattedContent = homework.map(homework => ({
             ...homework.toObject(),
             fechaEntrega: formatDate(homework.fechaEntrega) // Formatear la fecha
-        }));
-        res.status(200).json(formattedContent);
+        }))
+        res.status(200).json(formattedContent)
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Ha ocurrido un error al obtener las tareas.' });
+        console.error(error)
+        res.status(500).json({ message: 'Ha ocurrido un error al obtener las tareas.' })
+    }
+}
+
+export const getHomeworkCourse = async (req, res) => {
+    try {
+        const { homeworkId } = req.params
+        const homework = await Homework.findById(homeworkId).populate('pdfFile')
+        res.status(200).json(homework)
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: 'Ha ocurrido un error al obtener las tareas.' })
+    }
+}
+
+export const editHomework = async (req, res) => {
+    try {
+        const { originalname, filename } = req.file
+        const { homeworkId } = req.params // Desde req.params se obtiene el homeworkId (Id de la tarea)  
+        const data = JSON.parse(req.body.data)
+        const { nombre, descripcion, calificacionMaxima, fecha } = data
+        const fechaEntrega = new Date(fecha).toISOString()
+        // Consulta para eliminar la ruta estática del pdf (Debido a que la ruta estática que está llegando es la nueva)
+        const homework = await Homework.findById(homeworkId)
+        const pdf = await PdfFile.findById(homework.pdfFile)
+        const fileName = pdf.pdfURL.split('/').pop()
+        const filePath = path.join(__dirname, `../libs/pdf/${fileName}`);
+        fs.unlinkSync(filePath)
+        // Consulta para reemplazar primero en la colección pdfFiles
+        const updatePdfFile = await PdfFile.findByIdAndUpdate(pdf._id, { nombre: originalname, pdfURL: filename })
+        // Consulta para reemplazar en segundo lugar la colección homeworks
+        const updatedHomework = await Homework.findByIdAndUpdate(homeworkId, { nombre, descripcion, calificacionMaxima, fechaEntrega, pdfFile: updatePdfFile._id })
+        // Enviar la tarea actualizada al frontend
+        res.status(200).json(updatedHomework)
+    } catch (error) {
+        console.error("Error al actualizar la tarea:", error)
+        res.status(500).send("Error al actualizar la tarea")
     }
 }
 
 export const deleteHomework = async (req, res) => {
     try {
         const { homeworkId } = req.params // Desde req.params se obtiene el courseId (Id de la tarea)
-        const { pdfFile } = await Homework.findById(homeworkId) // Se elimina el curso por medio del courseId
-        const { pdfURL } = await PdfFile.findById(pdfFile)
+        const { pdfFile } = await Homework.findById(homeworkId)
+        const { pdfURL } = await PdfFile.findById(pdfFile._id)
         const fileName = pdfURL.split('/').pop()
         const filePath = path.join(__dirname, `../libs/pdf/${fileName}`);
         fs.unlinkSync(filePath)

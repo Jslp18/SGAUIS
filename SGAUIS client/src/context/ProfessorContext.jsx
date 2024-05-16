@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { verCursosProfesor, verEstudiantesCurso, subirContenido, verContenidoCurso, subirTarea, verTareasCurso, eliminarTarea } from '../api/professor'
+import { verCursosProfesor, verEstudiantesCurso, subirContenido, verContenidoCurso, subirTarea, verTareasCurso, 
+  verTareaParaEditar, eliminarTarea, actualizarTarea } from '../api/professor'
 import Cookies from 'js-cookie'
 
 const ProfessorContext = createContext()
@@ -125,12 +126,43 @@ export function ProfessorProvider({ children }) {
     }
   }
 
-  const getHomeworkCourse = async (currentId) => {
+  const getHomeworksCourse = async (currentId) => {
     try {
       const response = await verTareasCurso(currentId)
       return response.data
     } catch (error) {
       console.error(error)
+    }
+  }
+
+  const getHomeworkForEdit = async (currentId) => {
+    try {
+      const response = await verTareaParaEditar(currentId)
+      return response.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const homeworkUpdate = async (idTarea, formData) => {
+    try {
+      const cookies = Cookies.get()
+      const config = {
+        headers: {
+          Authorization: `Bearer ${cookies.token}`
+        }
+      }
+      const response = await actualizarTarea(idTarea, formData, config)
+      sethomeworkData(response.data)
+      if (response.status === 200) {
+        setShowSuccessMessage(true)
+      } else { setShowSuccessMessage(false) }
+      return response.data
+    } catch (error) {
+      if (Array.isArray(error.response.data)) {
+        return setErrors(error.response.data)
+      }
+      setErrors([error.response.data.message])
     }
   }
 
@@ -174,9 +206,11 @@ export function ProfessorProvider({ children }) {
       getContentCourse,
       setContentCourse,
       setSearchContent,
-      getHomeworkCourse,
+      getHomeworksCourse,
+      getHomeworkForEdit,
       setHomeworkCourse,
       setSearchHomework,
+      homeworkUpdate,
       deleteHomework,
       professorCourses,
       studentsCourse,

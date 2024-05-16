@@ -5,14 +5,15 @@ import SGAUIS6 from '../../resources/SGA UIS 6.png'
 
 
 function CoursesProfessor() {
-  const { register, handleSubmit, formState: { errors }, reset, watch } = useForm()
+  const { register, handleSubmit, formState: { errors }, reset, watch, setValue } = useForm()
 
   const { professorCourses, getStudentsCourse, studentsCourse, setStudentsCourse, search, searchStudents, setSearchStudents, selectedFile,
     setSelectedFile, contentUpload, errors: contentErrors, homeworkUpload, homeworkData, errors: homeworkErrors, showSuccessMessage,
-    viewProfessorCourses, contentData, getContentCourse, contentCourse, setContentCourse, searchContent, setSearchContent,
-    getHomeworkCourse, homeworkCourse, setHomeworkCourse, searchHomework, setSearchHomework, deleteHomework } = useProfessor()
+    viewProfessorCourses, contentData, getContentCourse, contentCourse, setContentCourse, searchContent, setSearchContent, getHomeworksCourse, 
+    homeworkCourse, setHomeworkCourse, searchHomework, setSearchHomework, getHomeworkForEdit, deleteHomework, homeworkUpdate } = useProfessor()
 
   const [currentCourse, setCurrentCourse] = useState(null)
+  const [currentHomework, setCurrentHomework] = useState(null)
   const [currentId, setCurrentId] = useState('')
 
   const itemsPerPage = 7
@@ -47,7 +48,7 @@ function CoursesProfessor() {
   // Mostrar las tareas que han sido subidas al curso
   const indexOfLastItem3 = currentPage3 * itemsPerPage3
   const indexOfFirstItem3 = indexOfLastItem3 - itemsPerPage3
-  const currentHomework = homeworkCourse.slice(indexOfFirstItem3, indexOfLastItem3)
+  const currentHomeworks = homeworkCourse.slice(indexOfFirstItem3, indexOfLastItem3)
 
   const maxCharacters = 200
 
@@ -59,6 +60,43 @@ function CoursesProfessor() {
   }
   // Obtener la longitud actual de 'descripcion'
   const descripcionLength = descripcion.length
+
+  // Set default values when in update mode
+
+  // Variable para definir el estado del formulario tarea, crear tarea ó subir tarea
+  const [homeworkState, setHomeworkState] = useState(false)
+
+  // Actual id de la tarea
+  const [currentHomeworkId, setCurrentHomeworkId] = useState('')
+
+  const convertToLocalDateTimeString = (isoDateString) => {
+    if (!isoDateString) return ''; // Manejar el caso en que la fecha sea undefined o null
+    
+    const date = new Date(isoDateString); // Crear un objeto Date desde la cadena ISO 8601
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    
+    // Formatear la fecha y la hora en el formato que espera datetime-local
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
+  useEffect(() => {
+    if (homeworkState && currentHomework) {
+      setValue('nombre', currentHomework.nombre)
+      setValue('calificacionMaxima', currentHomework.calificacionMaxima)
+      setValue('descripcion', currentHomework.descripcion)
+      console.log(convertToLocalDateTimeString(currentHomework.fechaEntrega))
+      setValue('fecha', convertToLocalDateTimeString(currentHomework.fechaEntrega))
+    }
+  }, [homeworkState, currentHomework, setValue])
+
+
+  const showHomeworkState = () => {
+    setHomeworkState(!homeworkState)
+  }
 
   const showCourse = (pagina) => {
     setProfessorPage(pagina)
@@ -109,6 +147,7 @@ function CoursesProfessor() {
     setSelectedFile(null)
     setHomeworkCourse([])
     setSearchHomework(false)
+    setHomeworkState(false)
     reset()
   }
 
@@ -164,14 +203,24 @@ function CoursesProfessor() {
     showCourse('subirTareas')
     const idCurso = course._id
     setCurrentId(idCurso)
-    const res = await getHomeworkCourse(idCurso)
+    const res = await getHomeworksCourse(idCurso)
     setHomeworkCourse(res)
     setTotalPages3(Math.ceil(res.length / itemsPerPage3))
     setCurrentPage3(1)
     setSearchHomework(true)
   }
 
-  const onHomework = handleSubmit(async (values) => {
+  const onForm = handleSubmit(async (values) => {
+    if (homeworkState) {
+      onUpdateHomework(values)
+    }
+    else {
+      onHomework(values)
+    }
+  })
+
+  const onHomework = async (values) => {
+    console.log(values.fecha)
     const formData = new FormData()
     formData.append('pdf', selectedFile)
 
@@ -185,13 +234,47 @@ function CoursesProfessor() {
     await homeworkUpload(currentId, formData)
 
     // Se actualice al ejecutar una subida de tareas
-    const res = await getHomeworkCourse(currentId)
+    const res = await getHomeworksCourse(currentId)
+    setHomeworkCourse(res)
+    setTotalPages3(Math.ceil(res.length / itemsPerPage3))
+    setCurrentPage3(1)
+    setSearchHomework(true)
+  }
+
+  const onUpdateHomework = async (values) => {
+    const formData = new FormData()
+    formData.append('pdf', selectedFile)
+
+    // Añadir datos JSON al formData
+    formData.append('data', JSON.stringify({
+      nombre: values.nombre,
+      descripcion: values.descripcion,
+      calificacionMaxima: values.calificacionMaxima,
+      fecha: values.fecha
+    }))
+    await homeworkUpdate(currentHomeworkId, formData)
+
+    // Se actualice al ejecutar una subida de tareas
+    const res = await getHomeworksCourse(currentId)
     console.log(res)
     setHomeworkCourse(res)
     setTotalPages3(Math.ceil(res.length / itemsPerPage3))
     setCurrentPage3(1)
     setSearchHomework(true)
-  })
+  }
+
+  //Mostrar el contenido para editar tarea 
+  const mostrarEditarTarea = async (idTarea) => {
+    setCurrentHomeworkId(idTarea)
+    if (!homeworkState) {
+      const res = await getHomeworkForEdit(idTarea)
+      setCurrentHomework(res)
+    }
+    // Cambia el estado después de la verificación
+    showHomeworkState()
+    setSelectedFile(null)
+    reset()
+  }
 
   // Eliminar tarea
   const eliminarTarea = async (idTarea) => {
@@ -271,7 +354,7 @@ function CoursesProfessor() {
                         <div className='bg-white sm:p-4 sm:pb-4'>
                           <div className='sm:mt-0 sm:ml-0 sm:text-center'>
                             <h3 className='text-lg leading-6 font-medium text-gray-900' id='modal-title'>
-                              Tarea {homeworkData.nombre} ha sido añadido al curso {currentCourse.nombre} de manera satisfactoria.
+                              {homeworkState ? `Tarea ${homeworkData.nombre} ha sido actualizada en curso ${currentCourse.nombre} de manera satisfactoria.` : `Tarea ${homeworkData.nombre} ha sido añadido al curso ${currentCourse.nombre} de manera satisfactoria.`}
                             </h3>
                           </div>
                         </div>
@@ -280,8 +363,8 @@ function CoursesProfessor() {
                   </div>
                 </div>
               )}
-              <h1 className='font-bold text-xl coinstracking-widest text-neutral-700 text-center'>Agregar tarea</h1>
-              <form onSubmit={onHomework} encType='multipart/form-data'>
+              <h1 className='font-bold text-xl coinstracking-widest text-neutral-700 text-center'> {homeworkState ? 'Actualizar tarea' : 'Agregar tarea'} </h1>
+              <form onSubmit={onForm} encType='multipart/form-data'>
                 <div className='mb-2 relative'>
                   <label htmlFor='nombre' className='block text-sm font-medium text-gray-700 mb-2'>Nombre de la tarea</label>
                   <input type='text' {...register('nombre', { required: true })} id='nombre' className='shadow-sm rounded-md w-full px-3 py-3 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2' placeholder='Ingrese el nombre de la tarea' />
@@ -294,7 +377,7 @@ function CoursesProfessor() {
                 </div>
                 <div className='mb-2 relative'>
                   <label htmlFor='descripcion' className='flex text-sm font-medium text-gray-700 mb-2'>Descripción</label>
-                  <textarea value={descripcion} rows='3' {...register('descripcion', { required: true })} id='descripcion' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2' placeholder='Ingrese la descripción de la tarea' />
+                  <textarea value={descripcion} rows='3' {...register('descripcion', { required: true })} id='descripcion' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2 resize-none' placeholder='Ingrese la descripción de la tarea' />
                   <span className={`absolute bottom-2 right-2 text-sm font-medium ${descripcionLength === maxCharacters ? 'text-red-800/80' : 'text-sky-700/70'}`}>{descripcionLength}<span className='text-sky-700'>/{maxCharacters}</span></span>
                   {errors.descripcion && (<p className='text-rose-400'>Por favor, completa este campo.</p>)}
                 </div>
@@ -329,7 +412,7 @@ function CoursesProfessor() {
                   </div>
                   {errors.pdf && (<p className='text-rose-400'>Por favor, completa este campo.</p>)}
                 </div>
-                <button type='submit' className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#6A8595] hover:bg-[#2B4C5D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#273F4B]'>Subir contenido</button>
+                <button type='submit' className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#6A8595] hover:bg-[#2B4C5D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#273F4B]'> {homeworkState ? 'Actualizar tarea' : 'Subir tarea'} </button>
               </form>
               {
                 homeworkErrors.map((error, i) => (
@@ -382,7 +465,7 @@ function CoursesProfessor() {
                           </tr>
                         </thead>
                         <tbody>
-                          {currentHomework.map((homework, index3) => (
+                          {currentHomeworks.map((homework, index3) => (
                             <tr key={index3} className='bg-zinc-200 border border-transparent hover:bg-zinc-300'>
                               <th scope='row' className='px-6 py-1 font-medium '>
                                 {homework.nombre}
@@ -410,7 +493,7 @@ function CoursesProfessor() {
                               </td>
                               <td className='px-6 py-3'>
                                 <div className='flex flex-row items-center justify-center gap-3'>
-                                  <button onClick={() => { editarTarea(homework) }} className='flex flex-row w-full items-center px-4 group cursor-pointer text-md bg-[#92A8C1] hover:bg-blue-300 focus:bg-blue-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns='http://www.w3.org/2000/svg' fill='#FFF' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap='round' strokeLinejoin='round' d='m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125' /></svg><p className='text-black font-normal group-focus:text-black'>Editar tarea</p></button>
+                                  <button onClick={() => { mostrarEditarTarea(homework._id) }} className='flex flex-row w-full items-center px-4 group cursor-pointer text-md bg-[#92A8C1] hover:bg-blue-300 focus:bg-blue-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns='http://www.w3.org/2000/svg' fill='#FFF' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap='round' strokeLinejoin='round' d='m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125' /></svg><p className='text-black font-normal group-focus:text-black'>{homeworkState ? 'No editar' : 'Editar tarea'}</p></button>
                                   <button onClick={() => { eliminarTarea(homework._id) }} className='flex flex-row w-full items-center px-4 group cursor-pointer text-md bg-[#c19492] hover:bg-red-300 focus:bg-red-400 focus:text-white rounded-2xl border-2 border-[#2D2D2D] gap-1'><svg xmlns='http://www.w3.org/2000/svg' fill='#FFF' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] w-6 h-6 group-focus:text-[#2D2D2D] group-focus:fill-white'><path strokeLinecap='round' strokeLinejoin='round' d='m3 3 1.664 1.664M21 21l-1.5-1.5m-5.485-1.242L12 17.25 4.5 21V8.742m.164-4.078a2.15 2.15 0 0 1 1.743-1.342 48.507 48.507 0 0 1 11.186 0c1.1.128 1.907 1.077 1.907 2.185V19.5M4.664 4.664 19.5 19.5' /></svg><p className='text-black font-normal group-focus:text-black'>Eliminar tarea</p></button>
                                 </div>
                               </td>
@@ -565,7 +648,7 @@ function CoursesProfessor() {
                           </div>
                           <div className='mb-2 relative'>
                             <label htmlFor='descripcion' className='flex text-sm font-medium text-gray-700 mb-2'>Descripción</label>
-                            <textarea value={descripcion} rows='3' {...register('descripcion', { required: true })} id='descripcion' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2' placeholder='Ingrese la descripción de la tarea que va a subir' />
+                            <textarea value={descripcion} rows='3' {...register('descripcion', { required: true })} id='descripcion' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2 resize-none' placeholder='Ingrese la descripción de la tarea que va a subir' />
                             <span className={`absolute bottom-2 right-2 text-sm font-medium ${descripcionLength === maxCharacters ? 'text-red-800/80' : 'text-sky-700/70'}`}>{descripcionLength}<span className='text-sky-700'>/{maxCharacters}</span></span>
                             {errors.descripcion && (<p className='text-rose-400'>Por favor, completa este campo.</p>)}
                           </div>

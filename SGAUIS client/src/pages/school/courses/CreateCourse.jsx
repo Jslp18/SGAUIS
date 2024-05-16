@@ -37,7 +37,7 @@ function CreateCourse() {
         </div>
         <div className='mb-2'>
           <label htmlFor='descripcion' className='block text-sm font-medium text-gray-700 mb-2'>Descripción</label>
-          <textarea rows='3' {...register('descripcion', { required: true })} id='descripcion' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2' placeholder='Ingrese la descripción del curso' />
+          <textarea rows='3' {...register('descripcion', { required: true })} id='descripcion' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2 resize-none' placeholder='Ingrese la descripción del curso' />
           {errors.descripcion && (<p className='text-rose-400'>Por favor, completa este campo.</p>)}
         </div>
         <div className='mb-8'>

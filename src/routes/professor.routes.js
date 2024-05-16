@@ -12,12 +12,14 @@ router.get('/', [verifyJwt.verifyToken, verifyJwt.isProfessor], professorControl
 router.get('/estudiantes/:courseId', [verifyJwt.verifyToken, verifyJwt.isProfessor], professorController.getStudentsCourses)
 
 // Contenido
-router.post('/subirContenido/:courseId', [verifyJwt.verifyToken, verifyJwt.isProfessor], storage.upload.single('pdf'), validate(contentSchema), professorController.uploadContent)
+router.post('/subirContenido/:courseId', [verifyJwt.verifyToken, verifyJwt.isProfessor], storage.upload.single('pdf'), validate(contentSchema), professorController.createContent)
 router.get('/contenido/:courseId', [verifyJwt.verifyToken, verifyJwt.isProfessor], professorController.getContentCourses)
 
 // Tareas
-router.post('/subirTarea/:homeworkId', [verifyJwt.verifyToken, verifyJwt.isProfessor], storage.upload.single('pdf'), validateJson(homeworkSchema), professorController.uploadHomework)
-router.get('/tareas/:homeworkId', [verifyJwt.verifyToken, verifyJwt.isProfessor], professorController.getHomeworkCourses)
+router.post('/subirTarea/:courseId', [verifyJwt.verifyToken, verifyJwt.isProfessor], storage.upload.single('pdf'), validateJson(homeworkSchema), professorController.createHomework)
+router.get('/tareas/:courseId', [verifyJwt.verifyToken, verifyJwt.isProfessor], professorController.getHomeworksCourse)
+router.get('/tarea/:homeworkId', [verifyJwt.verifyToken, verifyJwt.isProfessor], professorController.getHomeworkCourse)
+router.post('/actualizarTarea/:homeworkId', [verifyJwt.verifyToken, verifyJwt.isProfessor], storage.upload.single('pdf'), validateJson(homeworkSchema), professorController.editHomework)
 router.delete('/tareas/:homeworkId', [verifyJwt.verifyToken, verifyJwt.isProfessor], professorController.deleteHomework)
 
 export default router
