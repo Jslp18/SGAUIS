@@ -57,7 +57,6 @@ export const getContentCourses = async (req, res) => {
 export const createHomework = async (req, res) => {
     const { originalname, filename } = req.file
     const { courseId } = req.params // Desde req.params se obtiene el courseId (Id del curso) 
-    console.log(courseId)
     const data = JSON.parse(req.body.data)
     const { nombre, descripcion, calificacionMaxima, fecha } = data
     const fechaEntrega = new Date(fecha).toISOString()
@@ -75,7 +74,6 @@ export const getHomeworksCourse = async (req, res) => {
     try {
         const { courseId } = req.params
         const homework = await Homework.find({ curso: courseId }).populate('pdfFile')
-        console.log(homework)
         // Mapear los resultados para formatear las fechas
         const formattedContent = homework.map(homework => ({
             ...homework.toObject(),

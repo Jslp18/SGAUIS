@@ -4,7 +4,7 @@
   "description": "SGA UIS: Sistema de gestión de aprendizaje UIS. Proyecto final de la asignatura.",
   "main": "index.js",
   "scripts": {
-    "build": "babel src --out-dir build",
+    "build": "babel src --out-dir build --source-maps",
     "dev": "nodemon src/index.js --exec babel-node",
     "start": "node build/index.js"
   },
