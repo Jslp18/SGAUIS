@@ -1,15 +1,20 @@
 import { z } from 'zod'
+import { toDate } from 'date-fns-tz' 
 
 const isTodayOrLater = (dateString) => {
-  const inputDate = new Date(dateString)
-  const today = new Date()
+  console.log(dateString)
+  const timeZone = 'America/Bogota'  // zona horaria
 
-  if (inputDate < today) {
-    return false; // Fecha anterior al día actual
-  } else {
-    return true; // Fecha igual o posterior al día actual
-  }
-}
+  // Convertir la fecha de entrada a una fecha en la zona horaria especificada
+  const inputDate = toDate(dateString, { timeZone }) 
+
+  // Obtener la fecha y hora actual en la zona horaria especificada
+  const now = new Date() 
+  const nowInTimeZone = toDate(now, { timeZone }) 
+
+  // Comparar las fechas
+  return inputDate >= nowInTimeZone 
+} 
 
 export const homeworkSchema = z.object({
   nombre: z.string({
@@ -20,7 +25,7 @@ export const homeworkSchema = z.object({
     required_error: 'La calificación máxima es requerida.',
     invalid_type_error: 'La calificación máxima debe ser un número de precisión doble.'
   }).min(0, { message: 'La calificación máxima es de mínimo 0' })
-  .max(5.0, { message: 'La calificación máxima es de máximo 5.0' }),
+    .max(5.0, { message: 'La calificación máxima es de máximo 5.0' }),
   descripcion: z.string({
     required_error: 'La descripción es requerida.'
   }).min(20, { message: 'La descripción debe contener al menos 20 caracteres' })

@@ -12,7 +12,8 @@ function ProfessorPage() {
   const { reset } = useForm()
   const [showRegisterPage, setShowRegisterPage] = useState('home')
 
-  const { setSearchStudents, setStudentsCourse, setSelectedFile, setSearchContent, setContentCourse, setHomeworkCourse, setSearchHomework } = useProfessor()
+  const { setSearchStudents, setStudentsCourse, setSelectedFile, setSearchContent, setContentCourse, setHomeworkCourse, setSearchHomework,
+    setQuestionnaireCourse, setSearchQuestionnaire } = useProfessor()
 
   const showRegister = (pagina) => {
     setShowRegisterPage(pagina)
@@ -23,6 +24,8 @@ function ProfessorPage() {
     setSelectedFile(null)
     setHomeworkCourse([])
     setSearchHomework(false)
+    setQuestionnaireCourse([])
+    setSearchQuestionnaire(false)
     reset()
   }
 

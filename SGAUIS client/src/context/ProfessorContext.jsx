@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { verCursosProfesor, verEstudiantesCurso, subirContenido, verContenidoCurso, subirTarea, verTareasCurso, 
-  verTareaParaEditar, eliminarTarea, actualizarTarea } from '../api/professor'
+  verTareaParaEditar, eliminarTarea, actualizarTarea, subirCuestionario, verCuestionariosCurso, verCuestionarioParaEditar,
+actualizarCuestionario, eliminarCuestionario } from '../api/professor'
 import Cookies from 'js-cookie'
 
 const ProfessorContext = createContext()
@@ -21,6 +22,7 @@ export function ProfessorProvider({ children }) {
   const [searchStudents, setSearchStudents] = useState(false)
   const [searchContent, setSearchContent] = useState(false)
   const [searchHomework, setSearchHomework] = useState(false)
+  const [searchQuestionnaire, setSearchQuestionnaire] = useState(false)
 
   // Mostrar los cursos correspondientes al profesor
   const [professorCourses, setProfessorCourses] = useState([])
@@ -47,6 +49,12 @@ export function ProfessorProvider({ children }) {
 
   // Mostrar las tareas del curso
   const [homeworkCourse, setHomeworkCourse] = useState([])
+
+    // Manejo de la petición de guardado de tareas
+    const [questionnaireData, setQuestionnaireData] = useState([])
+
+    // Mostrar las tareas del curso
+    const [questionnaireCourse, setQuestionnaireCourse] = useState([])
 
   const viewProfessorCourses = async () => {
     try {
@@ -175,6 +183,77 @@ export function ProfessorProvider({ children }) {
     }
   }
 
+  const questionnaireUpload = async (idCurso, formData) => {
+    try {
+      const cookies = Cookies.get()
+      const config = {
+        headers: {
+          Authorization: `Bearer ${cookies.token}`
+        }
+      }
+      const response = await subirCuestionario(idCurso, formData, config)
+      setQuestionnaireData(response.data)
+      if (response.status === 201) {
+        setShowSuccessMessage(true)
+      } else { setShowSuccessMessage(false) }
+      return response.data
+    } catch (error) {
+      if (Array.isArray(error.response.data)) {
+        return setErrors(error.response.data)
+      }
+      setErrors([error.response.data.message])
+    }
+  }
+
+  const getQuestionnairesCourse = async (currentId) => {
+    try {
+      const response = await verCuestionariosCurso(currentId)
+      return response.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const getQuestionnaireForEdit = async (currentId) => {
+    try {
+      const response = await verCuestionarioParaEditar(currentId)
+      return response.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const questionnaireUpdate = async (idCuestionario, formData) => {
+    try {
+      const cookies = Cookies.get()
+      const config = {
+        headers: {
+          Authorization: `Bearer ${cookies.token}`
+        }
+      }
+      const response = await actualizarCuestionario(idCuestionario, formData, config)
+      setQuestionnaireData(response.data)
+      if (response.status === 200) {
+        setShowSuccessMessage(true)
+      } else { setShowSuccessMessage(false) }
+      return response.data
+    } catch (error) {
+      if (Array.isArray(error.response.data)) {
+        return setErrors(error.response.data)
+      }
+      setErrors([error.response.data.message])
+    }
+  }
+
+  const deleteQuestionnaire = async (currentId) => {
+    try {
+      const res = await eliminarCuestionario(currentId)
+      return res
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   useEffect(() => {
     if (errors.length > 0) {
       const timer = setTimeout(() => {
@@ -212,6 +291,13 @@ export function ProfessorProvider({ children }) {
       setSearchHomework,
       homeworkUpdate,
       deleteHomework,
+      questionnaireUpload,
+      getQuestionnairesCourse,
+      getQuestionnaireForEdit,
+      setQuestionnaireCourse,
+      setSearchQuestionnaire,
+      questionnaireUpdate,
+      deleteQuestionnaire,
       professorCourses,
       studentsCourse,
       currentCourse,
@@ -225,7 +311,10 @@ export function ProfessorProvider({ children }) {
       contentCourse,
       searchContent,
       homeworkCourse,
-      searchHomework
+      searchHomework,
+      questionnaireData,
+      questionnaireCourse,
+      searchQuestionnaire
     }}
     >
       {children}
