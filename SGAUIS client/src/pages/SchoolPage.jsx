@@ -25,7 +25,7 @@ function SchoolPage() {
     <div className='text-gray-900 bg-slate-100 body-font shadow w-full overflow-y-auto'>
       <div className='flex justify-start w-full h-[calc(100vh-9vh)]'>
         <div className='bg-white flex flex-col ml-6 my-6 mr-3 p-4 w-1/6 text-base rounded-lg border-2 border-black border-opacity-20 shadow-lg'>
-          <div className='bg-[#545454] text-center rounded-lg mb-5 truncate md:overflow-clip'>
+          <div className='bg-[#545454] text-center rounded-lg mb-5 truncate md:overflow-clip p-3'>
             <h1 className='text-lg text-white font-bold'> {user.codigo} </h1>
             <p className='text-md text-white'> {user.correo} </p>
           </div>
@@ -37,7 +37,7 @@ function SchoolPage() {
           </div>
         </div>
         <div className='bg-slate-100 w-5/6 h-[calc(100vh-9vh)] flex justify-center'>
-          {showRegisterPage === 'home' && <Escuela />}
+          {showRegisterPage === 'home' && <School />}
           {showRegisterPage === 'cursos' && <CoursesPage />}
           {showRegisterPage === 'crearUsuarios' && <RegisterPage />}
           {showRegisterPage === 'info' && <Info />}
@@ -47,7 +47,7 @@ function SchoolPage() {
   )
 }
 
-function Escuela() {
+function School() {
   return (
     <img className='place-self-center opacity-85 w-2/5' src={SGAUIS2} alt='SGA UIS: Sistema de Gestión de Aprendizaje Universidad Industrial de Santander.' />
   )

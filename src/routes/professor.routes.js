@@ -3,6 +3,7 @@ import * as professorController from '../controllers/professor.controller.js'
 import { verifyJwt, storage } from '../middlewares/importer.js'
 import { contentSchema } from '../schemas/content.schema.js'
 import { homeworkSchema } from '../schemas/homework.schema'
+import { forumSchema } from '../schemas/forum.schema.js'
 import { questionnaireSchema } from '../schemas/questionnaire.schema.js'
 import { validate } from '../middlewares/validate.js'
 import { validateJson } from '../middlewares/validateJson.js'
@@ -29,5 +30,12 @@ router.get('/cuestionarios/:courseId', [verifyJwt.verifyToken, verifyJwt.isProfe
 router.get('/cuestionario/:questionnaireId', [verifyJwt.verifyToken, verifyJwt.isProfessor], professorController.getQuestionnaireCourse)
 router.put('/cuestionarios/:questionnaireId', [verifyJwt.verifyToken, verifyJwt.isProfessor], storage.upload.none(), validateJson(questionnaireSchema), professorController.editQuestionnaire)
 router.delete('/cuestionarios/:questionnaireId', [verifyJwt.verifyToken, verifyJwt.isProfessor], professorController.deleteQuestionnaire)
+
+// Foros
+router.post('/foros/subirForo/:courseId', [verifyJwt.verifyToken, verifyJwt.isProfessor], storage.upload.none(), validateJson(forumSchema), professorController.createForum)
+router.get('/foros/:courseId', [verifyJwt.verifyToken, verifyJwt.isProfessor], professorController.getForumsCourse)
+router.get('/foro/:forumId', [verifyJwt.verifyToken, verifyJwt.isProfessor], professorController.getForumCourse)
+router.put('/foros/:forumId', [verifyJwt.verifyToken, verifyJwt.isProfessor], storage.upload.none(), validateJson(forumSchema), professorController.editForum)
+router.delete('/foros/:forumId', [verifyJwt.verifyToken, verifyJwt.isProfessor], professorController.deleteForum)
 
 export default router

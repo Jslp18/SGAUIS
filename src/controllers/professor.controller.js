@@ -5,6 +5,7 @@ import PdfFile from '../models/PDFfile.model.js'
 import Content from '../models/content.model.js'
 import Homework from '../models/homework.model.js'
 import Questionnaire from '../models/questionnaires.model.js'
+import Forum from '../models/forum.model.js'
 import Answers from '../models/answer.model.js'
 import Questions from '../models/questions.model.js'
 import QuestionsAnswers from '../models/questionsAnswers.model.js'
@@ -75,7 +76,7 @@ export const createContent = async (req, res) => {
     const savedContent = await newContent.save()
 
     res.status(201).json({
-      nombre: savedContent.nombre,
+      nombre: savedContent.nombre
     })
   } catch (error) {
     console.error('Error al crear el contenido:', error)
@@ -112,7 +113,7 @@ export const createHomework = async (req, res) => {
     const savedTarea = await newTarea.save()
 
     res.status(201).json({
-      nombre: savedTarea.nombre,
+      nombre: savedTarea.nombre
     })
   } catch (error) {
     console.error('Error al crear la tarea:', error)
@@ -142,7 +143,6 @@ export const getHomeworkCourse = async (req, res) => {
   try {
     const { homeworkId } = req.params
     const homework = await Homework.findById(homeworkId).populate('pdfFile')
-
     res.status(200).json(homework)
   } catch (error) {
     console.error('Error al obtener la tarea:', error)
@@ -406,7 +406,6 @@ export const editQuestionnaire = async (req, res) => {
   }
 }
 
-
 export const deleteQuestionnaire = async (req, res) => {
   const session = await mongoose.startSession()
   session.startTransaction()
@@ -444,6 +443,74 @@ export const deleteQuestionnaire = async (req, res) => {
   }
 }
 
+export const createForum = async (req, res) => {
+  try {
+    const { courseId } = req.params // Desde req.params se obtiene el courseId (Id del curso)
+    const data = JSON.parse(req.body.data)
+    const { titulo, descripcion } = data
+    const newForum = new Forum({ titulo, descripcion, curso: courseId })
+    const savedForum = await newForum.save()
+    res.status(201).json({
+      nombre: savedForum.titulo
+    })
+  } catch (error) {
+    console.error('Error al crear el foro:', error)
+    res.status(500).json({ message: 'Error al crear el foro.' })
+  }
+}
+
+export const getForumsCourse = async (req, res) => {
+  try {
+    const { courseId } = req.params
+    const forums = await Forum.find({ curso: courseId })
+    res.status(200).json(forums)
+  } catch (error) {
+    console.error('Error al obtener los foros del curso:', error)
+    res.status(500).json({ message: 'Error al obtener los foros del curso.' })
+  }
+}
+
+export const getForumCourse = async (req, res) => {
+  try {
+    const { forumId } = req.params
+    const forum = await Forum.findById(forumId)
+    res.status(200).json(forum)
+  } catch (error) {
+    console.error('Error al obtener el foro:', error)
+    res.status(500).json({ message: 'Error al obtener el foro.' })
+  }
+}
+
+export const editForum = async (req, res) => {
+  try {
+    const { forumId } = req.params // Desde req.params se obtiene el homeworkId (Id de la tarea)
+    const data = JSON.parse(req.body.data)
+    const { titulo, descripcion } = data
+
+    // Consulta para reemplazar en segundo lugar la colección homeworks
+    const updatedForum = await Forum.findByIdAndUpdate(forumId, { titulo, descripcion }, { new: true })
+
+    // Enviar la tarea actualizada al frontend
+    res.status(200).json(updatedForum)
+  } catch (error) {
+    console.error('Error al actualizar el foro:', error)
+    res.status(500).send('Error al actualizar el foro')
+  }
+}
+
+export const deleteForum = async (req, res) => {
+  try {
+    const { forumId } = req.params // Desde req.params se obtiene el courseId (Id de la tarea)
+
+    await Forum.findByIdAndDelete(forumId)
+
+    res.sendStatus(204)
+  } catch (error) {
+    console.error('Error al eliminar el foro:', error)
+    res.status(500).send('Error al eliminar el foro')
+  }
+}
+
 function formatDateTime(date) {
   try {
     return moment(date).tz('America/Bogota').format('DD/MM/YYYY, h:mm a')
@@ -462,7 +529,6 @@ function formatTime(timeString) {
     return timeString // Devolver la hora original en caso de error
   }
 }
-
 
 function formatDate(date) {
   try {

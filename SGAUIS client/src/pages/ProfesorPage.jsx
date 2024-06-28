@@ -4,7 +4,8 @@ import { useProfessor } from '../context/ProfessorContext'
 import { useForm } from 'react-hook-form'
 import CursosProfesor from './professor/CoursesProfessor'
 import InfoProfesor from './professor/InfoProfessor'
-import Professor from './professor/Professor'
+import { useEffect } from "react"
+import SGAUIS5 from '../resources/SGA UIS 5.png'
 
 function ProfessorPage() {
 
@@ -13,7 +14,7 @@ function ProfessorPage() {
   const [showRegisterPage, setShowRegisterPage] = useState('home')
 
   const { setSearchStudents, setStudentsCourse, setSelectedFile, setSearchContent, setContentCourse, setHomeworkCourse, setSearchHomework,
-    setQuestionnaireCourse, setSearchQuestionnaire } = useProfessor()
+    setQuestionnaireCourse, setSearchQuestionnaire, setForumCourse, setSearchForum } = useProfessor()
 
   const showRegister = (pagina) => {
     setShowRegisterPage(pagina)
@@ -26,6 +27,8 @@ function ProfessorPage() {
     setSearchHomework(false)
     setQuestionnaireCourse([])
     setSearchQuestionnaire(false)
+    setForumCourse([])
+    setSearchForum(false)
     reset()
   }
 
@@ -33,9 +36,9 @@ function ProfessorPage() {
     <div className='text-gray-900 bg-slate-100 body-font shadow w-full overflow-auto'>
       <div className='flex justify-start w-full h-[calc(100vh-9vh)]'>
         <div className='bg-white flex flex-col ml-6 my-6 mr-3 p-4 w-1/6 text-base rounded-lg border-2 border-black border-opacity-20 shadow-lg'>
-          <div className='bg-[#545454] text-center rounded-lg mb-5 truncate md:overflow-clip'>
+          <div className='bg-[#545454] text-center rounded-lg mb-5 truncate md:overflow-clip p-3'>
             <h1 className='text-lg text-white font-bold'> {user.codigo} </h1>
-            <p className='text-md text-white'> {user.correo} </p>
+            <p className='text-md text-white'> {user.correo}  </p>
           </div>
           <div className='flex flex-col text-start'>
             <button onClick={() => showRegister('home')} className='flex flex-row space-x-2 group cursor-pointer my-3 py-2 px-1 text-md focus:bg-[#918F8F] focus:text-white rounded-md border border-transparent'><svg xmlns='http://www.w3.org/2000/svg' fill='#D4D4D4' viewBox='0 0 24 24' strokeWidth='1.5' stroke='currentColor' className='text-[#2D2D2D] group-focus:text-[#2D2D2D] w-6 h-6 group-focus:fill-white'><path strokeLinecap='round' strokeLinejoin='round' d='m11.25 9-3 3m0 0 3 3m-3-3h7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z' /></svg><p className='text-[#2D2D2D] font-medium group-focus:font-bold group-focus:text-white'>Inicio</p></button>
@@ -50,6 +53,19 @@ function ProfessorPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+function Professor() {
+
+  const { viewProfessorCourses } = useProfessor()
+
+  useEffect(() => {
+      viewProfessorCourses()
+    }, [])
+
+  return (
+    <img className='place-self-center opacity-85 w-2/5' src={SGAUIS5} alt='SGA UIS: Sistema de Gestión de Aprendizaje Universidad Industrial de Santander.' />
   )
 }
 

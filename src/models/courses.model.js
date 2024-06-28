@@ -17,10 +17,6 @@ const coursesSchema = new Schema({
   creadoPor: {
     ref: 'Users',
     type: Schema.Types.ObjectId
-  },
-  foros: {
-    ref: 'Foros',
-    type: Schema.Types.ObjectId
   }
 }, {
   timestamps: true,

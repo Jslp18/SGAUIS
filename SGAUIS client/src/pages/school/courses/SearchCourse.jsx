@@ -49,7 +49,16 @@ function SearchCourse() {
   const eliminarCurso = async (idCurso) => {
     const res = await deleteCourse(idCurso)
     if (res.status === 204) {
-      setCoursesSearch(coursesSearch.filter(course => course._id !== idCurso))
+      const updatedCoursesSearch = coursesSearch.filter(course => course._id !== idCurso)
+      setCoursesSearch(updatedCoursesSearch)
+      // Ajustar la paginación
+      const totalPages = Math.ceil(updatedCoursesSearch.length / itemsPerPage)
+      if (currentPage > totalPages) {
+        setCurrentPage(currentPage - 1) // Regresas a la primera página si la página actual ya no existe
+        setTotalPages(totalPages) // Actualizas el total de páginas
+      } else {
+        setTotalPages(totalPages) // Actualizas el total de páginas
+      }
     }
   }
 

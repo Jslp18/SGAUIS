@@ -1,7 +1,9 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { verCursosProfesor, verEstudiantesCurso, subirContenido, verContenidoCurso, subirTarea, verTareasCurso, 
+import {
+  verCursosProfesor, verEstudiantesCurso, subirContenido, verContenidoCurso, subirTarea, verTareasCurso,
   verTareaParaEditar, eliminarTarea, actualizarTarea, subirCuestionario, verCuestionariosCurso, verCuestionarioParaEditar,
-actualizarCuestionario, eliminarCuestionario } from '../api/professor'
+  actualizarCuestionario, eliminarCuestionario, subirForo, verForosCurso, verForoParaEditar, actualizarForo, eliminarForo
+} from '../api/professor'
 import Cookies from 'js-cookie'
 
 const ProfessorContext = createContext()
@@ -23,6 +25,7 @@ export function ProfessorProvider({ children }) {
   const [searchContent, setSearchContent] = useState(false)
   const [searchHomework, setSearchHomework] = useState(false)
   const [searchQuestionnaire, setSearchQuestionnaire] = useState(false)
+  const [searchForum, setSearchForum] = useState(false)
 
   // Mostrar los cursos correspondientes al profesor
   const [professorCourses, setProfessorCourses] = useState([])
@@ -50,11 +53,17 @@ export function ProfessorProvider({ children }) {
   // Mostrar las tareas del curso
   const [homeworkCourse, setHomeworkCourse] = useState([])
 
-    // Manejo de la petición de guardado de tareas
-    const [questionnaireData, setQuestionnaireData] = useState([])
+  // Manejo de la petición de guardado de tareas
+  const [questionnaireData, setQuestionnaireData] = useState([])
 
-    // Mostrar las tareas del curso
-    const [questionnaireCourse, setQuestionnaireCourse] = useState([])
+  // Mostrar las tareas del curso
+  const [questionnaireCourse, setQuestionnaireCourse] = useState([])
+
+  // Manejo de la petición de guardado de foros
+  const [forumData, setForumData] = useState([])
+
+  // Mostrar los foros del curso
+  const [forumCourse, setForumCourse] = useState([])
 
   const viewProfessorCourses = async () => {
     try {
@@ -254,6 +263,71 @@ export function ProfessorProvider({ children }) {
     }
   }
 
+  const forumUpload = async (idCurso, formData) => {
+    try {
+      const response = await subirForo(idCurso, formData)
+      setForumData(response.data)
+      if (response.status === 201) {
+        setShowSuccessMessage(true)
+      } else { setShowSuccessMessage(false) }
+      return response.data
+    } catch (error) {
+      if (Array.isArray(error.response.data)) {
+        return setErrors(error.response.data)
+      }
+      setErrors([error.response.data.message])
+    }
+  }
+
+  const getForumsCourse = async (idCurso) => {
+    try {
+      const response = await verForosCurso(idCurso)
+      return response.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const getForumForEdit = async (currentId) => {
+    try {
+      const response = await verForoParaEditar(currentId)
+      return response.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const forumUpdate = async (idForo, formData) => {
+    try {
+      const cookies = Cookies.get()
+      const config = {
+        headers: {
+          Authorization: `Bearer ${cookies.token}`
+        }
+      }
+      const response = await actualizarForo(idForo, formData, config)
+      setForumData(response.data)
+      if (response.status === 200) {
+        setShowSuccessMessage(true)
+      } else { setShowSuccessMessage(false) }
+      return response.data
+    } catch (error) {
+      if (Array.isArray(error.response.data)) {
+        return setErrors(error.response.data)
+      }
+      setErrors([error.response.data.message])
+    }
+  }
+
+  const deleteForum = async (idCurso) => {
+    try {
+      const res = await eliminarForo(idCurso)
+      return res
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   useEffect(() => {
     if (errors.length > 0) {
       const timer = setTimeout(() => {
@@ -280,41 +354,61 @@ export function ProfessorProvider({ children }) {
       setCurrentCourse,
       setSearchStudents,
       setSelectedFile,
+
       contentUpload,
       homeworkUpload,
+      questionnaireUpload,
+      forumUpload,
+
       getContentCourse,
       setContentCourse,
       setSearchContent,
+
       getHomeworksCourse,
       getHomeworkForEdit,
       setHomeworkCourse,
       setSearchHomework,
       homeworkUpdate,
       deleteHomework,
-      questionnaireUpload,
+
       getQuestionnairesCourse,
       getQuestionnaireForEdit,
       setQuestionnaireCourse,
       setSearchQuestionnaire,
       questionnaireUpdate,
       deleteQuestionnaire,
+
+      getForumsCourse,
+      getForumForEdit,
+      setForumCourse,
+      setSearchForum,
+      forumUpdate,
+      deleteForum,
+
       professorCourses,
       studentsCourse,
       currentCourse,
       search,
       searchStudents,
       selectedFile,
+
       contentData,
-      homeworkData,
-      errors,
-      showSuccessMessage,
       contentCourse,
       searchContent,
+
+      homeworkData,
       homeworkCourse,
       searchHomework,
+
       questionnaireData,
       questionnaireCourse,
-      searchQuestionnaire
+      searchQuestionnaire,
+
+      forumData,
+      forumCourse,
+      searchForum,
+      errors,
+      showSuccessMessage
     }}
     >
       {children}

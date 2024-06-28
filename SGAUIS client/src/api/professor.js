@@ -16,3 +16,9 @@ export const verCuestionariosCurso = (currentId) => axios.get(`/profesor/cursos/
 export const verCuestionarioParaEditar = (currentId) => axios.get(`/profesor/cursos/cuestionario/${currentId}`)
 export const actualizarCuestionario = (idCuestionario, formData, config) => axios.put(`/profesor/cursos/cuestionarios/${idCuestionario}`, formData, config)
 export const eliminarCuestionario = (currentId) => axios.delete(`/profesor/cursos/cuestionarios/${currentId}`)
+// Foros
+export const subirForo = (currentId, formData) => axios.post(`/profesor/cursos/foros/subirForo/${currentId}`, formData)
+export const verForosCurso = (currentId) => axios.get(`/profesor/cursos/foros/${currentId}`)
+export const verForoParaEditar = (currentId) => axios.get(`/profesor/cursos/foro/${currentId}`)
+export const actualizarForo = (idForo, formData, config) => axios.put(`/profesor/cursos/foros/${idForo}`, formData, config)
+export const eliminarForo = (currentId) => axios.delete(`/profesor/cursos/foros/${currentId}`)
