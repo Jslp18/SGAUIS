@@ -87,8 +87,6 @@ function CoursesProfessor() {
   // Obtener la longitud actual de 'descripcion'
   const descripcionLength = descripcion.length
 
-  // Set default values when in update mode
-
   // Variable para definir el estado del formulario tarea, crear tarea ó actualizar tarea
   const [homeworkState, setHomeworkState] = useState(false)
 
@@ -142,6 +140,7 @@ function CoursesProfessor() {
     return `${year}-${month}-${day}`
   }
 
+  // Setear en los inputs los valores de la tarea
   useEffect(() => {
     if (homeworkState && currentHomework) {
       setValue('nombre', currentHomework.nombre)
@@ -639,7 +638,7 @@ function CoursesProfessor() {
         <div className='flex flex-col w-full'>
           {
             search === true && professorCourses.length === 0 && (
-              <div className='flex items-center mt-20 w-[80%]'>
+              <div className='flex place-self-center mt-20 w-[80%]'>
                 <h1 className='font-bold text-4xl coinstracking-widest text-[#231F20] text-opacity-35 text-center'>Ups, parece que no estás matriculado como profesor a ningún curso. Ponte en contácto con tu respectiva escuela.</h1>
               </div>
             )}
@@ -740,8 +739,8 @@ function CoursesProfessor() {
                     </div>
                     <div className='mb-2 relative'>
                       <label htmlFor='descripcion' className='flex text-sm font-medium text-gray-700 mb-2'>Descripción</label>
-                      <textarea value={descripcion} rows='3' {...register('descripcion', { required: true })} id='descripcion' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2 resize-none' placeholder='Ingrese la descripción de la tarea' />
-                      <span className={`absolute bottom-2 right-2 text-sm font-medium ${descripcionLength === maxCharacters ? 'text-red-800/80' : 'text-sky-700/70'}`}>{descripcionLength}<span className='text-sky-700'>/{maxCharacters}</span></span>
+                      <textarea value={descripcion} rows='3' {...register('descripcion', { required: true })} id='descripcion' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2 resize-none text-justify' placeholder='Ingrese la descripción de la tarea' />
+                      <span className={`absolute bottom-2 right-2 text-sm font-medium ${descripcionLength === maxCharacters ? 'text-red-800/80' : 'text-emerald-800/80'}`}>{descripcionLength}<span className='text-sky-700'>/{maxCharacters}</span></span>
                       {errors.descripcion && (<p className='text-rose-400'>Por favor, completa este campo.</p>)}
                     </div>
                     <div className='mb-2'>
@@ -759,8 +758,7 @@ function CoursesProfessor() {
                     </div>
                     <button type='submit' className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#6A8595] hover:bg-[#2B4C5D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#273F4B]'> {homeworkState ? 'Actualizar tarea' : 'Subir tarea'} </button>
                   </form>
-                  {
-                    professorErrors.map((error, i) => (
+                  {professorErrors.map((error, i) => (
                       <div className='bg-indigo-100 p-2 text-stone-900 mt-4 rounded-lg text-justify' key={i}>
                         {error}
                       </div>
@@ -772,14 +770,12 @@ function CoursesProfessor() {
                       <h1 className='mt-2 px-10 font-bold text-4xl coinstracking-widest text-[#231F20] text-opacity-35 text-center'>Cargando tareas asignadas...</h1>
                     </div>
                   )}
-                  {
-                    searchHomework && homeworkCourse.length === 0 && (
+                  {searchHomework && homeworkCourse.length === 0 && (
                       <div className='relative w-[75%] '>
                         <h1 className='mt-2 px-10 font-bold text-4xl coinstracking-widest text-[#231F20] text-opacity-35 text-center'>Ups, parece que aún no hay tareas asignadas en el curso {currentCourse.nombre}.</h1>
                       </div>
                     )}
-                  {
-                    homeworkCourse.length !== 0 && (
+                  {homeworkCourse.length !== 0 && (
                       <div className='w-full'>
                         <div className='flex flex-col overflow-x-auto shadow-gray-500 shadow-2xl rounded-xl bg-slate-100'>
                           <div className='flex-shrink-0 bg-slate-100'>
@@ -825,7 +821,7 @@ function CoursesProfessor() {
                                       {homework.calificacionMaxima}
                                     </td>
                                     <td className='px-6 py-3'>
-                                      <button className='flex flex-row gap-3 underline-offset-4 items-center justify-center hover:text-blue-500' onClick={() => descargarPDF(homework.pdfFile.pdfURL, homework.pdfFile.nombre)}>Descargar<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg></button>
+                                      <button className='flex flex-row gap-3 underline-offset-4 items-center justify-center hover:text-blue-700' onClick={() => descargarPDF(homework.pdfFile.pdfURL, homework.pdfFile.nombre)}>{homework.pdfFile.nombre}<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg></button>
                                     </td>
                                     <td className='px-6 py-3'>
                                       <div className='flex flex-row items-center justify-center gap-3'>
@@ -922,8 +918,8 @@ function CoursesProfessor() {
                       </div>
                       <div className='mb-2 relative'>
                         <label htmlFor='descripcion' className='flex text-sm font-medium text-gray-700 mb-2'>Descripción</label>
-                        <textarea value={descripcion} rows='3' {...register('descripcion', { required: true })} id='descripcion' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2 resize-none' placeholder='Ingrese la descripción del cuestionario' />
-                        <span className={`absolute bottom-2 right-2 text-sm font-medium ${descripcionLength === maxCharacters ? 'text-red-800/80' : 'text-sky-700/70'}`}>{descripcionLength}<span className='text-sky-700'>/{maxCharacters}</span></span>
+                        <textarea value={descripcion} rows='3' {...register('descripcion', { required: true })} id='descripcion' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2 resize-none text-justify' placeholder='Ingrese la descripción del cuestionario' />
+                        <span className={`absolute bottom-2 right-2 text-sm font-medium ${descripcionLength === maxCharacters ? 'text-red-800/80' : 'text-emerald-800/80'}`}>{descripcionLength}<span className='text-sky-700'>/{maxCharacters}</span></span>
                         {errors.descripcion && (<p className='text-rose-400'>Por favor, completa este campo.</p>)}
                       </div>
                       <div className='mb-2 relative'>
@@ -1175,8 +1171,8 @@ function CoursesProfessor() {
                     </div>
                     <div className='mb-4 relative'>
                       <label htmlFor='descripcion' className='flex text-sm font-medium text-gray-700 mb-2'>Descripción</label>
-                      <textarea value={descripcion} rows='3' {...register('descripcion', { required: true })} id='descripcion' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2 resize-none' placeholder='Ingrese la descripción del foro. (Recomendación: Plantee la discusión en este espacio).' />
-                      <span className={`absolute bottom-2 right-2 text-sm font-medium ${descripcionLength === maxCharacters ? 'text-red-800/80' : 'text-sky-700/70'}`}>{descripcionLength}<span className='text-sky-700'>/{maxCharacters}</span></span>
+                      <textarea value={descripcion} rows='3' {...register('descripcion', { required: true })} id='descripcion' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2 resize-none text-justify' placeholder='Ingrese la descripción del foro. (Recomendación: Plantee la discusión en este espacio).' />
+                      <span className={`absolute bottom-2 right-2 text-sm font-medium ${descripcionLength === maxCharacters ? 'text-red-800/80' : 'text-emerald-800/80'}`}>{descripcionLength}<span className='text-sky-700'>/{maxCharacters}</span></span>
                       {errors.descripcion && (<p className='text-rose-400'>Por favor, completa este campo.</p>)}
                     </div>
                     <button type='submit' className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#6A8595] hover:bg-[#2B4C5D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#273F4B]'> {forumState ? 'Actualizar foro' : 'Crear foro'} </button>
@@ -1388,8 +1384,8 @@ function CoursesProfessor() {
                       </div>
                       <div className='mb-2 relative'>
                         <label htmlFor='descripcion' className='flex text-sm font-medium text-gray-700 mb-2'>Descripción</label>
-                        <textarea value={descripcion} rows='3' {...register('descripcion', { required: true })} id='descripcion' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2 resize-none' placeholder='Ingrese la descripción de la tarea que va a subir' />
-                        <span className={`absolute bottom-2 right-2 text-sm font-medium ${descripcionLength === maxCharacters ? 'text-red-800/80' : 'text-sky-700/70'}`}>{descripcionLength}<span className='text-sky-700'>/{maxCharacters}</span></span>
+                        <textarea value={descripcion} rows='3' {...register('descripcion', { required: true })} id='descripcion' className='shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 text-gray-800 focus:outline-none focus:border-sky-600 focus:border-2 resize-none text-justify' placeholder='Ingrese la descripción de la tarea que va a subir' />
+                        <span className={`absolute bottom-2 right-2 text-sm font-medium ${descripcionLength === maxCharacters ? 'text-red-800/80' : 'text-sky-800/80'}`}>{descripcionLength}<span className='text-sky-700'>/{maxCharacters}</span></span>
                         {errors.descripcion && (<p className='text-rose-400'>Por favor, completa este campo.</p>)}
                       </div>
                       <div className='mb-6'>
@@ -1420,8 +1416,7 @@ function CoursesProfessor() {
                       </div>
                       <button type='submit' className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#6A8595] hover:bg-[#2B4C5D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#273F4B]'>Subir contenido</button>
                     </form>
-                    {
-                      contentErrors.map((error, i) => (
+                    {contentErrors.map((error, i) => (
                         <div className='bg-indigo-100 p-2 text-stone-900 mt-4 rounded-lg text-justify' key={i}>
                           {error}
                         </div>
@@ -1474,16 +1469,16 @@ function CoursesProfessor() {
                                         {content.descripcion}
                                       </td>
                                       <td className='px-6 py-3'>
-                                        <button className='flex flex-row gap-3 underline-offset-4 items-center justify-center hover:text-blue-500' onClick={() => descargarPDF(content.pdfFile.pdfURL, content.pdfFile.nombre)}>Descargar<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg></button>
+                                        <button className='flex flex-row gap-3 underline-offset-4 items-center justify-center hover:text-blue-700' onClick={() => descargarPDF(content.pdfFile.pdfURL, content.pdfFile.nombre)}>{content.pdfFile.nombre}<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg></button>
                                       </td>
                                     </tr>
                                   ))}
                                 </tbody>
                               </table>
                             </div>
-                            <div className='flex items-center justify-center w-full my-2'>
-                              <nav className='block'>
-                                <ul className='flex list-none flex-row space-x-5 items-center'>
+                            <div className='flex items-center justify-center w-full my-2 overflow-x-hidden'>
+                              <nav className='overflow-x-auto py-2'>
+                                <ul className='flex list-none flex-row space-x-4 items-center'>
                                   <li>
                                     <button className={`hover:bg-[#A1AFBA] hover:text-white py-2 px-3.5 text-sm text-black font-medium rounded-full border-2 border-[#2D2D2D] ${currentPage2 === 1 ? 'bg-[#A1AFBA] text-white' : ''}`} onClick={() => paginate2(currentPage2 - 1)} disabled={currentPage2 === 1}>
                                       Anterior
@@ -1513,8 +1508,7 @@ function CoursesProfessor() {
             </div>
           )}
         </div>
-      )
-      }
+      )}
     </div >
   )
 }

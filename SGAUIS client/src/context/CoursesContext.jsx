@@ -10,7 +10,6 @@ export const useCourses = () => {
   if (!context) {
     throw new Error('useCourses debe ser usado con CoursesProvider')
   }
-
   return context
 }
 

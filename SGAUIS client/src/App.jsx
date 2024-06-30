@@ -9,13 +9,16 @@ import Home from './pages/Home'
 import { CoursesProvider } from './context/CoursesContext'
 import { ProfessorProvider } from './context/ProfessorContext'
 import SGAUIS7 from './resources/SGA UIS 7.png'
+import { StudentProvider } from './context/StudentContext'
 
 function App() {
   return (
     <AuthProvider>
       <CoursesProvider>
         <ProfessorProvider>
-          <Content />
+          <StudentProvider>
+            <Content />
+          </StudentProvider>
         </ProfessorProvider>
       </CoursesProvider>
     </AuthProvider>

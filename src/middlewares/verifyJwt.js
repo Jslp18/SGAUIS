@@ -37,7 +37,7 @@ export const isProfessor = async (req, res, next) => { // Función para verifica
   }
 }
 
-export const isEstudent = async (req, res, next) => { // Función para verificar que el tipo de rol del usuario en este caso rol "Estudiante"
+export const isStudent = async (req, res, next) => { // Función para verificar que el tipo de rol del usuario en este caso rol "Estudiante"
   const user = await Users.findById(req.userId) // req.userId es el Id que el token proporcionaba
   const rol = await Roles.findOne({ _id: user.rol }) // Encontramos el rol que corresponde al id de rol del usuario
   if (rol.nombre === 'Estudiante') {

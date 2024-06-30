@@ -15,7 +15,7 @@ function NoPermissionPage() {
   )
 }
 
-function ProtectedRoute({ children, rol, redirectTo = '/' }) {
+function ProtectedRoute({ children, rol }) {
   const { isAuthenticated, loading } = useAuth()
   if (loading) return <h1> Loading... </h1>
   if (!loading && !isAuthenticated) return <Navigate to='/SGAUIS' replace />

@@ -16,7 +16,7 @@ function LoginPage() {
 
   return (
     <div className='min-h-screen flex items-center justify-center w-full bg-gray-100'>
-      <div className='bg-white text-gray-200 shadow-2xl shadow-gray-500 rounded-lg my-4 px-8 py-6 w-[26%]'>
+      <div className='bg-white text-gray-200 shadow-2xl shadow-gray-500 rounded-2xl px-8 py-8 w-[25%]'>
         <h1 className='text-3xl font-bold text-center mb-4 text-gray-700'>¡Bienvenido!</h1>
         <p className='text-xl font-normal text-center mb-2 text-gray-700'> SGA UIS</p>
         <form onSubmit={onSubmit}>

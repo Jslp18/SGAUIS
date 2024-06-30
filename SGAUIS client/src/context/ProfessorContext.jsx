@@ -14,7 +14,6 @@ export const useProfessor = () => {
   if (!context) {
     throw new Error('useProfessor debe ser usado con ProfessorProvider')
   }
-
   return context
 }
 
@@ -32,9 +31,6 @@ export function ProfessorProvider({ children }) {
 
   // Mostrar los estudiantes inscritos en el curso
   const [studentsCourse, setStudentsCourse] = useState([])
-
-  // Mostrar el curso actual elegido
-  const [currentCourse, setCurrentCourse] = useState(null)
 
   // Manejo de la subida de archivo
   const [selectedFile, setSelectedFile] = useState(null)
@@ -351,7 +347,6 @@ export function ProfessorProvider({ children }) {
       viewProfessorCourses,
       getStudentsCourse,
       setStudentsCourse,
-      setCurrentCourse,
       setSearchStudents,
       setSelectedFile,
 
@@ -387,7 +382,6 @@ export function ProfessorProvider({ children }) {
 
       professorCourses,
       studentsCourse,
-      currentCourse,
       search,
       searchStudents,
       selectedFile,

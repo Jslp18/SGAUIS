@@ -3,15 +3,14 @@ import { Schema, model } from 'mongoose'
 const forumCommentSchema = new Schema({
   comentario: {
     type: String,
-    require: true,
-    unique: true
+    require: true
   },
-  temaForo: {
-    ref: 'TopicsForums',
+  foro: {
+    ref: 'Forum',
     require: true,
     type: Schema.Types.ObjectId
-},
-  usuarios: {
+  },
+  usuario: {
     ref: 'Users',
     require: true,
     type: Schema.Types.ObjectId

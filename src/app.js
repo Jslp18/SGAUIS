@@ -5,6 +5,7 @@ import coursesRoutes from './routes/courses.routes'
 import authRoutes from './routes/auth.routes'
 import userRoutes from './routes/user.routes'
 import professorRoutes from './routes/professor.routes'
+import studentRoutes from './routes/student.routes'
 import { createRoles, createUsers } from './libs/initialSetup'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
@@ -32,8 +33,9 @@ app.get('/', (req, res) => {
   })
 })
 
-app.use('/profesor/cursos', professorRoutes)
 app.use('/escuela/cursos', coursesRoutes)
+app.use('/profesor/cursos', professorRoutes)
+app.use('/estudiante/cursos', studentRoutes)
 app.use('/', authRoutes)
 app.use('/usuarios', userRoutes)
 
